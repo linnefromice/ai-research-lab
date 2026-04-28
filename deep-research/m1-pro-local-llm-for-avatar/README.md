@@ -32,16 +32,21 @@ Phase 4b 完了時に pipeline へ書き戻す** (詳細は末尾 §運用方針
 | VAD | `sox` `silence` effect (0.8s 無音終了 + leading silence 除去) | ✅ 確定 (Phase 4a) |
 | キャラ設定 | ナオ (改名後 SYSTEM_PROMPT は Phase 4a ログ §4 / 発見 2) | ✅ 確定 (Phase 4a) |
 | **TTS** | **VOICEVOX** (docker `cpu-arm64-latest`, port 50021) / `8 春日部つむぎ:ノーマル` | ✅ 確定 (Phase 4b、2026-04-29、bench 中央値 534ms) |
-| Stream chunker | **未実装** | ⏳ Phase 4b (C) |
+| **Stream chunker + 統合** | [`chunker.py`](./phase4b-llm-stream-chunker/chunker.py) (句読点 split + VOICEVOX TTS)、`voice_to_avatar` で full pipeline 統合 | ✅ 主要部完了 (Phase 4b、2026-04-29、初音 1491ms) |
 | Live2D | 未着手 | 未着手 |
 
-### 実測 latency (Phase 4a 時点)
+### 実測 latency
 
-- ASR: 0.665 - 0.862s
-- LLM TTFT: 0.690 - 0.870s
-- E2E (ASR + LLM TTFT): 中央値 1.639s (Phase 3 比 +100ms 以内)
+| Phase | 計測 | 値 |
+|---|---|---|
+| 4a | ASR | 0.665 - 0.862s |
+| 4a | LLM TTFT | 0.690 - 0.870s |
+| 4a | E2E (ASR + LLM TTFT) | 中央値 1.639s |
+| **4b** | **VOICEVOX synth** (春日部つむぎ, "んー、おはようございます。") | **534ms** |
+| **4b** | **chunker 1 文目 play_start** ("おはよう" prompt) | **1202ms** |
+| **4b** | **voice_to_avatar 初音** (生成音声 "今日はいい天気ですね") | **1491ms** ← budget < 2.5s 達成 |
 
-## 推奨 Avatar 起動シーケンス (Phase 4a 版)
+## 推奨 Avatar 起動シーケンス (Phase 4b 版)
 
 ```bash
 # 1. helpers をシェルに読み込み (lab 側 SoT を source)
@@ -50,20 +55,24 @@ source ./avatar-helpers.sh
 # 2. WhisperKit を常駐起動 (idempotent)
 asr_serve_start
 
-# 3. LM Studio.app で Swallow 8B をロード + Local Server を 1234 で起動
+# 3. LM Studio.app で Swallow 8B をロード + Local Server (port 1234) 起動
 
-# 4. SYSTEM_PROMPT を export (ナオ版、Phase 4a ログ §4 参照)
+# 4. VOICEVOX engine を起動 (port 50021)
+docker run -d --name voicevox -p 50021:50021 voicevox/voicevox_engine:cpu-arm64-latest
+
+# 5. SYSTEM_PROMPT を export (任意、未指定なら chunker.py の DEFAULT_SYSTEM_PROMPT が効く)
 export SYSTEM_PROMPT='あなたは「ナオ」という物静かな...'
 
-# 5. KV cache を事前加熱 (~2-3s)
+# 6. KV cache を事前加熱 (~2-3s)
 warmup_llm
 
-# 6. 発話開始 (VAD で動的録音長)
-voice_to_llm
+# 7. 発話開始 (VAD で動的録音長 + chunker + VOICEVOX TTS)
+voice_to_avatar
 ```
 
 `avatar-helpers.sh` 収録関数: `ttft` / `ttft_sys` / `ttft_multiturn` / `asr_serve_start` /
-`asr_serve_stop` / `asr_record` / `asr_latency` / `asr_debug` / `warmup_llm` / `voice_to_llm` /
+`asr_serve_stop` / `asr_record` / `asr_latency` / `asr_debug` / `warmup_llm` /
+`voice_to_llm` (Phase 4a、ASR+LLM のみ、TTS なし) / **`voice_to_avatar`** (Phase 4b、full pipeline) /
 `avatar_help`。詳細は `avatar-helpers.sh` 自体と Phase 4a ログ「avatar-helpers.sh の導入」節を参照。
 
 ## ここで進める Phase 4b
@@ -73,7 +82,19 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 | slug | 内容 | budget | 状態 |
 |---|---|---|---|
 | [phase4b-tts-bench/](./phase4b-tts-bench/) | TTS 候補比較 (VOICEVOX / AivisSpeech / WhisperKit Qwen3-TTS)、ナオ向け voice 選定 | 初音 latency < 700ms | ✅ 確定 (VOICEVOX `8 春日部つむぎ:ノーマル`、Qwen3-TTS は打ち切り) |
-| [phase4b-llm-stream-chunker/](./phase4b-llm-stream-chunker/) | LLM stream を `。/！/？/〜` で split → 1 文目完成と同時に TTS 起動。multi-turn history 管理も同時に再設計 | 体感で「3 文制約違反」を隠蔽 | ⏳ 着手前 |
+| [phase4b-llm-stream-chunker/](./phase4b-llm-stream-chunker/) | LLM stream を `。/！/？/〜` で split → 1 文目完成と同時に TTS 起動 | 体感で「3 文制約違反」を隠蔽 | ✅ 主要部完了 (`voice_to_avatar` 統合済、初音 1491ms。iv-vi 残) |
+
+## 残課題 (Phase 4b 完了基準)
+
+主要部 (B + C 統合) は完了。完了宣言までの残タスク:
+
+| 項目 | 内容 | 優先度 |
+|---|---|---|
+| **iv** 3 文以上の打ち切り (案 A) | `chunker.py` に `--max-sentences N` 追加。N+1 文目以降の synth/play を抑止し、生成自体も abort | 中 (Phase 4a 既知の hot button、確率事象) |
+| **v** multi-turn history | 会話 state 管理。N ターン保持 + summarize / truncate 戦略 | 高 (avatar の会話らしさが大きく変わる) |
+| **vi** character drift / 一人称揺れ fewshot | system prompt に fewshot 例文追加 → 「キミ」指定で「あなた」混入を抑制 | 中 |
+| **書き戻し** | Phase 4b 完了時、lab 側 `avatar-helpers.sh` を pipeline へ書き戻し PR (運用方針 §運用方針 参照) | 高 (SoT 巻き戻し) |
+| Live2D | 顔 / 口パク / 表情。動作 OK 後で着手 | 中-低 (PoC では音優先) |
 
 ## 別タスク (このトピック内で扱う / 扱わない)
 
