@@ -52,7 +52,7 @@ async for chunk in llm_stream:
 
 ```bash
 # 0. avatar-helpers.sh を source
-source ../../../../ai-research-pipeline/features/deep-research/research/m1-pro-local-llm-for-avatar/avatar-helpers.sh
+source ../avatar-helpers.sh
 
 # 1. chunker の最小実装を Python or Node で書く
 # 2. 既知の "3 文出力" を再現するプロンプトで chunker をテスト
@@ -69,6 +69,8 @@ source ../../../../ai-research-pipeline/features/deep-research/research/m1-pro-l
 
 ## 採用後の統合先
 
-[phase4b-tts-bench/](../phase4b-tts-bench/) の結果と合わせて、pipeline 側の
-`avatar-helpers.sh` の `voice_to_llm` を「LLM stream + chunker + TTS」まで一気通貫
-する拡張版に書き換える (pipeline 側で別 PR)。
+[phase4b-tts-bench/](../phase4b-tts-bench/) の結果と合わせて、
+[`../avatar-helpers.sh`](../avatar-helpers.sh) の `voice_to_llm` を
+「LLM stream + chunker + TTS」まで一気通貫する拡張版に書き換える。
+Phase 4b 期間中は lab 側 SoT で編集し、Phase 4b 完了時に pipeline へ書き戻す
+(運用方針は [../README.md §運用方針](../README.md))。

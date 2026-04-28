@@ -6,8 +6,9 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 
 ## 起点 (親リポの研究成果)
 
-このトピックの全研究成果は **ai-research-pipeline (private)** に存在する。Lab 側
-からは Read で参照する。Lab には複製しない (SoT divergence を避けるため)。
+このトピックの研究レポート / 実装ログは **ai-research-pipeline (private)** に存在する。Lab 側
+からは Read で参照する。**例外: `avatar-helpers.sh` は Phase 4b 期間中 lab を SoT とし、
+Phase 4b 完了時に pipeline へ書き戻す** (詳細は末尾 §運用方針 参照、方針反転日 2026-04-29)。
 
 | ファイル | 内容 |
 |---|---|
@@ -18,7 +19,7 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 | `.../03-validation.md` | 検証 |
 | `.../04-phase3-implementation-log.md` | **Phase 3 実装ログ** (PR #428) |
 | `.../05-phase4-implementation-log.md` | **Phase 4a 実装ログ** (PR #429) ← 直近の状態 |
-| `.../avatar-helpers.sh` | **Phase 4a で完成した shell helpers** (本リポからは source で参照) |
+| `.../avatar-helpers.sh` | Phase 4a で完成した shell helpers の **凍結版** (元 SoT)。Phase 4b 中は [`./avatar-helpers.sh`](./avatar-helpers.sh) が SoT |
 | `.../_sources.json` | 一次情報 URL 集 |
 
 ## 現在の確定構成 (Phase 4a 終了時点)
@@ -43,8 +44,8 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 ## 推奨 Avatar 起動シーケンス (Phase 4a 版)
 
 ```bash
-# 1. helpers をシェルに読み込み (pipeline 側のスクリプトを source)
-source ../../../../ai-research-pipeline/features/deep-research/research/m1-pro-local-llm-for-avatar/avatar-helpers.sh
+# 1. helpers をシェルに読み込み (lab 側 SoT を source)
+source ./avatar-helpers.sh
 
 # 2. WhisperKit を常駐起動 (idempotent)
 asr_serve_start
@@ -97,5 +98,15 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 ## このリポ (lab) の制約 (再掲)
 
 - Lab は **public**。秘匿情報を入れない (詳細は [../../README.md](../../README.md))
-- 親リポの研究ファイルは **Read のみ**。lab からの作業で改変しない
-- `avatar-helpers.sh` を lab で改造したくなったら、lab 側に copy せず **pipeline 側で別 PR** を切る方針 (SoT は pipeline)
+- 親リポの研究ファイル (00-04, 05, reports/, _sources.json) は **Read のみ**。lab からの作業で改変しない
+
+## 運用方針 — `avatar-helpers.sh` の SoT
+
+| 期間 | SoT | 備考 |
+|---|---|---|
+| Phase 4a 完了時 (2026-04-28) | pipeline 側 | 元の方針 |
+| **Phase 4b 期間中 (2026-04-29 〜)** | **lab 側 [`./avatar-helpers.sh`](./avatar-helpers.sh)** | TTS / chunker の試作で頻繁に編集するため、往復コスト回避 |
+| Phase 4b 完了時 | pipeline へ書き戻し | 完了時に pipeline 側で別 PR を切り、SoT を pipeline へ戻す |
+
+Phase 4b 中の編集は lab 側の `avatar-helpers.sh` に対して行う。pipeline 側のファイルは
+Phase 4a 時点の凍結版として残し、編集しない (差分は書き戻し PR でまとめる)。
