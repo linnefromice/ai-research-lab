@@ -17,6 +17,10 @@
 : "${LLM_MODEL:=llama-3.1-swallow-8b-instruct-v0.5:2}"
 export WHISPERKIT_PORT WHISPERKIT_MODEL LLM_MODEL
 
+# Resolve this file's directory (bash uses BASH_SOURCE, zsh uses $0 in sourced files).
+# Used by voice_to_avatar to locate phase4b-llm-stream-chunker/chunker.py.
+__avatar_helpers_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+
 avatar_help() {
   cat <<'EOF'
 Avatar helpers loaded. Available functions:
@@ -41,8 +45,11 @@ Avatar helpers loaded. Available functions:
 
   Pipeline
     warmup_llm                   Warm LM Studio KV cache (~3s)
-    voice_to_llm [max_seconds]   VAD-recorded speech → ASR → LLM stream
+    voice_to_llm [max_seconds]   VAD-recorded speech → ASR → LLM stream (no TTS)
                                    max_seconds = hard cap (default 10)
+    voice_to_avatar [max_sec]    VAD-recorded speech → ASR → chunker → VOICEVOX TTS
+                                   (Phase 4b: full avatar pipeline, requires
+                                    VOICEVOX engine on port 50021 + chunker.py)
 
   Tunables (env vars)
     WHISPERKIT_PORT              default 50060
@@ -406,6 +413,83 @@ e2e = asr_elapsed + ttft
 flag = "✅" if e2e < 2.5 else "⚠️"
 print(f"⏱️  ASR ({asr_elapsed:.3f}s) + LLM TTFT ({ttft:.3f}s) = {e2e:.3f}s {flag} (target < 2.5s)")
 PYEOF
+}
+
+# ─── Phase 4b (A integration): full avatar pipeline ───
+# voice_to_llm の "stream + print" を chunker.py 経由の "stream + split + speak"
+# に置き換えた版。VOICEVOX engine (port 50021) + phase4b-llm-stream-chunker/chunker.py
+# が前提。
+voice_to_avatar() {
+  local max_duration="${VAD_MAX_SEC:-${1:-10}}"
+  local silence_sec="${VAD_SILENCE_SEC:-0.8}"
+  local thresh="${VAD_THRESHOLD:-1}"
+  local wav="/tmp/avatar-asr-test/voice-input.wav"
+  local chunker="${__avatar_helpers_dir}/phase4b-llm-stream-chunker/chunker.py"
+
+  if [[ ! -f "$chunker" ]]; then
+    echo "ERROR: chunker not found at $chunker" >&2
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$wav")"
+
+  echo "🎤 Listening (max ${max_duration}s, auto-stop after ${silence_sec}s silence)..."
+  rec -q -r 16000 -c 1 -b 16 "$wav" \
+      silence 1 0.3 "${thresh}%" 1 "${silence_sec}" "${thresh}%" \
+      trim 0 "$max_duration" 2>/dev/null
+
+  if [[ ! -s "$wav" ]]; then
+    echo "(無音検出 — 録音されず)"
+    return 0
+  fi
+
+  local actual
+  actual=$(soxi -D "$wav" 2>/dev/null || echo "?")
+  echo "✅ Recorded ${actual}s. Running ASR..."
+
+  # Stage 1: ASR (transcript のみ stdout に出力、shell 側で capture)
+  local transcript
+  transcript=$(WAV_PATH="$wav" \
+    WK_PORT="$WHISPERKIT_PORT" \
+    WK_MODEL="$WHISPERKIT_MODEL" \
+    python3 <<'PYEOF'
+import os, json, sys, urllib.request, urllib.error
+boundary = "----B"
+fields = {"model": os.environ["WK_MODEL"], "language": "ja", "response_format": "verbose_json"}
+with open(os.environ["WAV_PATH"], "rb") as f:
+    audio = f.read()
+body = b""
+for k, v in fields.items():
+    body += f"--{boundary}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n".encode()
+body += f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"a.wav\"\r\nContent-Type: audio/wav\r\n\r\n".encode()
+body += audio + f"\r\n--{boundary}--\r\n".encode()
+req = urllib.request.Request(
+    f"http://localhost:{os.environ['WK_PORT']}/v1/audio/transcriptions",
+    data=body, method="POST",
+    headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+)
+try:
+    with urllib.request.urlopen(req) as r:
+        result = json.loads(r.read())
+except urllib.error.HTTPError as e:
+    print(f"ASR HTTP error: {e.read().decode()}", file=sys.stderr)
+    raise SystemExit(1)
+segs = result.get("segments") or []
+text = (segs[0].get("text") if segs else result.get("text", "")).strip()
+print(text)
+PYEOF
+)
+
+  if [[ -z "$transcript" ]]; then
+    echo "(無音 — 何も認識されず)"
+    return 0
+  fi
+  echo "📝 ASR: ${transcript}"
+  echo "💬 ナオ:"
+
+  # Stage 2: chunker.py で LLM stream + 句読点 split + VOICEVOX TTS
+  SYSTEM_PROMPT="${SYSTEM_PROMPT:-}" \
+  python3 "$chunker" "$transcript" --tts --bench
 }
 
 # ─── Phase 3: KV cache pre-warmer ───

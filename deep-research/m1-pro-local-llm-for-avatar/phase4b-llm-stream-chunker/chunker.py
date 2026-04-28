@@ -137,7 +137,8 @@ def main():
     parser.add_argument("prompt", help="ユーザー発話")
     parser.add_argument("--tts", action="store_true", help="VOICEVOX で読み上げ")
     parser.add_argument("--bench", action="store_true", help="latency 表示")
-    parser.add_argument("--system", default=os.environ.get("SYSTEM_PROMPT", DEFAULT_SYSTEM_PROMPT))
+    # 空文字 SYSTEM_PROMPT を default 扱いにするため `or` で fallback
+    parser.add_argument("--system", default=os.environ.get("SYSTEM_PROMPT") or DEFAULT_SYSTEM_PROMPT)
     parser.add_argument("--speaker", type=int, default=SPEAKER_ID)
     args = parser.parse_args()
 
