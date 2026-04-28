@@ -22,16 +22,16 @@ Phase 4b 完了時に pipeline へ書き戻す** (詳細は末尾 §運用方針
 | `.../avatar-helpers.sh` | Phase 4a で完成した shell helpers の **凍結版** (元 SoT)。Phase 4b 中は [`./avatar-helpers.sh`](./avatar-helpers.sh) が SoT |
 | `.../_sources.json` | 一次情報 URL 集 |
 
-## 現在の確定構成 (Phase 4a 終了時点)
+## 現在の確定構成
 
 | 層 | 採用 | 状態 |
 |---|---|---|
-| OS / Hardware | macOS Sequoia 15.7.3 / M1 Pro 32GB | ✅ 確定 |
-| LLM | `mlx-community/Llama-3.1-Swallow-8B-Instruct-v0.5-4bit` on **LM Studio** (port 1234) | ✅ 確定 |
-| ASR | **WhisperKit** serve (`large-v3-v20240930_turbo`) | ✅ 確定 |
-| VAD | `sox` `silence` effect (0.8s 無音終了 + leading silence 除去) | ✅ 確定 |
-| キャラ設定 | ナオ (改名後 SYSTEM_PROMPT は Phase 4a ログ §4 / 発見 2) | ✅ 確定 |
-| TTS | **未確定** | ⏳ Phase 4b (B) |
+| OS / Hardware | macOS Sequoia 15.7.3 / M1 Pro 32GB | ✅ 確定 (Phase 4a) |
+| LLM | `mlx-community/Llama-3.1-Swallow-8B-Instruct-v0.5-4bit` on **LM Studio** (port 1234) | ✅ 確定 (Phase 4a) |
+| ASR | **WhisperKit** serve (`large-v3-v20240930_turbo`) | ✅ 確定 (Phase 4a) |
+| VAD | `sox` `silence` effect (0.8s 無音終了 + leading silence 除去) | ✅ 確定 (Phase 4a) |
+| キャラ設定 | ナオ (改名後 SYSTEM_PROMPT は Phase 4a ログ §4 / 発見 2) | ✅ 確定 (Phase 4a) |
+| **TTS** | **VOICEVOX** (docker `cpu-arm64-latest`, port 50021) / `8 春日部つむぎ:ノーマル` | ✅ 確定 (Phase 4b、2026-04-29、bench 中央値 534ms) |
 | Stream chunker | **未実装** | ⏳ Phase 4b (C) |
 | Live2D | 未着手 | 未着手 |
 
@@ -70,10 +70,10 @@ voice_to_llm
 
 Phase 4 のうち未完了の B / C を実機で検証する。
 
-| slug | 内容 | budget |
-|---|---|---|
-| [phase4b-tts-bench/](./phase4b-tts-bench/) | TTS 候補比較 (VOICEVOX / AivisSpeech / WhisperKit Qwen3-TTS)、ナオ向け voice 選定 | 初音 latency < 700ms |
-| [phase4b-llm-stream-chunker/](./phase4b-llm-stream-chunker/) | LLM stream を `。/！/？/〜` で split → 1 文目完成と同時に TTS 起動。multi-turn history 管理も同時に再設計 | 体感で「3 文制約違反」を隠蔽 |
+| slug | 内容 | budget | 状態 |
+|---|---|---|---|
+| [phase4b-tts-bench/](./phase4b-tts-bench/) | TTS 候補比較 (VOICEVOX / AivisSpeech / WhisperKit Qwen3-TTS)、ナオ向け voice 選定 | 初音 latency < 700ms | ✅ 確定 (VOICEVOX `8 春日部つむぎ:ノーマル`、Qwen3-TTS は打ち切り) |
+| [phase4b-llm-stream-chunker/](./phase4b-llm-stream-chunker/) | LLM stream を `。/！/？/〜` で split → 1 文目完成と同時に TTS 起動。multi-turn history 管理も同時に再設計 | 体感で「3 文制約違反」を隠蔽 | ⏳ 着手前 |
 
 ## 別タスク (このトピック内で扱う / 扱わない)
 
