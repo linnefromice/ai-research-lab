@@ -50,7 +50,7 @@ sox test.aiff -r 16000 -c 1 test.wav
 
 # 2. WhisperKit serve を起動 (large-v3 turbo)
 #    avatar-helpers.sh の asr_serve_start を流用してよい
-source ../../../../ai-research-pipeline/features/deep-research/research/m1-pro-local-llm-for-avatar/avatar-helpers.sh
+source ../avatar-helpers.sh
 asr_serve_start
 
 # 3. 4 条件で投げて verbose_json で token 列を記録
