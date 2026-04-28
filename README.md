@@ -28,6 +28,29 @@
 dev clone は通常 `../ai-research-pipeline` に隣接する想定。Claude/AI が作業する際は
 `../ai-research-pipeline/features/<feature>/reports/<date>.md` などを直接参照する。
 
+## ⚠️ このリポは Public — 秘匿情報を入れない
+
+**ai-research-lab は GitHub 上で public 公開しているリポジトリ**。以下を絶対に
+コミットしないこと:
+
+- API key / token / 認証情報 (Anthropic / OpenAI / GitHub Token / Telegram Bot Token 等)
+- `.env` の実値 (`.env` は `.gitignore` 済み)
+- 親リポ (ai-research-pipeline) の private な情報
+  - 内部 URL (D1 endpoint, 非公開 admin URL 等)
+  - 未公開のスキーマ・設計
+  - 個人を特定しうるメモ
+- Cloud リソース ID (Cloudflare account ID, GCP project ID 等) で公開したくないもの
+- 業務委託先 / クライアント情報
+
+### 秘匿情報を扱う検証は別 (private) repo を立てる方針
+
+社外秘 / 個人情報 / production 認証情報を伴う検証 (例: 実 API key で本番に叩いて
+コスト測定する、社内 API のスキーマを試す、production データで挙動確認する 等) は
+**別途 private repo を作って分離する**。本リポでは public で出して問題ない範囲の
+検証だけを行う。
+
+判断に迷ったら public に出さない方を選ぶ (rotate より公開停止の方が痛い)。
+
 ## ディレクトリ構成
 
 ```

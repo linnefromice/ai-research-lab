@@ -6,6 +6,25 @@
 詳細な目的とディレクトリ構成は [README.md](./README.md) を、軽量ルールは
 [.claude/rules/lab-workflow.md](./.claude/rules/lab-workflow.md) を参照。
 
+## ⚠️ このリポは Public
+
+**ai-research-lab は GitHub 上で public 公開している**。Claude/AI 作業時は次を厳守:
+
+- **API key / token / 認証情報を絶対に書き込まない・commit しない** (Anthropic / OpenAI / GitHub / Telegram Bot 等)
+- 親リポ (`../ai-research-pipeline`) の **private な情報** (内部 URL, 非公開スキーマ, 個人特定情報) を写し取らない
+- Cloud リソース ID (Cloudflare account ID, GCP project ID 等) のうち公開したくないものを書かない
+- 秘密値は `.env` (gitignored) に。`.env.example` ではキー名だけ共有
+- うっかり commit した場合は **即ローテート** + git history からの除去を検討
+
+### 秘匿情報を扱う検証は別 (private) repo を提案する
+
+社外秘 / 個人情報 / production 認証情報を伴う検証は、このリポでは行わない。
+ユーザーから依頼があった場合は **「別途 private repo を立てましょう」と提案** する
+(本リポで進めない)。
+
+詳細は [README.md の Public 警告節](./README.md#%EF%B8%8F-このリポは-public--秘匿情報を入れない) と
+[.claude/rules/lab-workflow.md の 秘密情報 節](./.claude/rules/lab-workflow.md#秘密情報) を参照。
+
 ## 親リポへのアクセス
 
 dev 環境では通常、ai-research-pipeline は `../ai-research-pipeline` に存在する。

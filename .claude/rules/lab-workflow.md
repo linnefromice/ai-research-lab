@@ -58,9 +58,25 @@ PoC / 実験向けの軽量な指針。
 
 ## 秘密情報
 
+**このリポは public**。秘密情報の混入は外部に晒すことと同義なので、特に厳重に扱う。
+
 - API key, token は `.env` (gitignored) に置く
-- `.env.example` でキー名だけ共有
+- `.env.example` でキー名だけ共有 (値は空)
 - うっかり commit してしまった場合は **即ローテート** + git history からの除去を検討
+- 親リポ (ai-research-pipeline) の private な情報 (内部 URL, 非公開スキーマ, 個人特定情報) を持ち込まない
+- Cloud リソース ID (Cloudflare account ID, GCP project ID 等) で公開したくないものを書かない
+
+### 秘匿情報を扱う検証は別 (private) repo を立てる
+
+以下のような検証は **このリポでは行わず、別途 private repo を立てる方針**:
+
+- 実 API key で本番エンドポイントを叩いてコスト / レート / 挙動を測る
+- 社内 API のスキーマや response 例を扱う
+- production データを使った再現実験
+- 業務委託先 / クライアント情報を含む検証
+
+ユーザーから依頼が来た場合は「private repo を立てましょう」と提案する。
+判断に迷ったら public に出さない方を選ぶ (rotate より公開停止の方が痛い)。
 
 ## やっていいこと / やってはいけないこと
 
