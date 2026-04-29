@@ -62,12 +62,12 @@ python3 chunker.py "おはよう" --tts --bench
 - 1 文目 play_start latency: prompt 送信 → 最初の音が出るまで
   - 内訳: LLM TTFT + 1 文目生成 + VOICEVOX synth + afplay 起動
   - 目標: Phase 4a ASR + LLM TTFT 中央値 1.639s + VOICEVOX 534ms = 約 2.2s 想定
-- 3 文以上生成された場合の扱い:
-  - 案 A: 打ち切り (n 文目以降を捨てる、生成自体も abort)
-  - 案 B: フェードアウト (TTS の volume を下げて自然に終わる)
-  - 案 C: 全部再生 (隠蔽せず流す) ← 現状の chunker.py の挙動
-- multi-turn で history を保持しつつ context を肥大化させない方針 (未実装)
-- character drift / 一人称揺れ を fewshot で抑制 (未実装)
+- **3 文以上生成された場合の扱い (iv 完了)**:
+  - **採用: 案 A 打ち切り** (`--max-sentences N` で N 文目以降の synth/play を抑止し、LLM stream も generator break で abort)
+  - voice_to_avatar の default は `MAX_SENTENCES=2` (Phase 4a 「3 文以上 NG」)
+  - 案 B フェードアウト / 案 C 全部再生は実装せず (案 A で目的達成)
+- multi-turn で history を保持しつつ context を肥大化させない方針 (未実装、v)
+- character drift / 一人称揺れ を fewshot で抑制 (未実装、vi)
 
 ## 結果メモ
 
@@ -95,11 +95,42 @@ python3 chunker.py "おはよう" --tts --bench
 - chunker overhead 自体は誤差レベル (split は数 µs/chunk)
 - 並行性の余地: synth を per-sentence 並列、playback のみ直列にすれば sentence 2 の `ready_ms` を短縮可能 (PoC では未実装)
 
+### iv 検証 (2026-04-29、prompt = "おはようございます今日は元気ですか")
+
+Phase 4a §2 で「確率事象」とされた 3 文違反は、**朝挨拶系 prompt では 2/2 run で再現** (確率事象ではなく強い誘発条件)。
+
+| run | --max-sentences | 出力 | 状態 |
+|---|---|---|---|
+| 1 | (none) | 3 文「おはようございます。私はいつも通り、穏やかに過ごしています。キミは今日、何か楽しい予定はありますか？」 | 3 文違反 |
+| 2 | (none) | 3 文「おはよう。私はいつも通りです、キミ。お元気ですか？」 | 3 文違反 |
+| 3 | 2 | 2 文「おはよう、キミ。私は元気ですよ。」 | ✅ クリーン停止 |
+| 4 | 2 | 2 文「おはようございます。私はいつも通り、穏やかに過ごしています。」 | ✅ クリーン停止 |
+
+→ 案 A (打ち切り) を採用。`voice_to_avatar` で default `MAX_SENTENCES=2` 有効化済。
+
+### vi 検証 (2026-04-29、fewshot ON/OFF A/B)
+
+`FEWSHOT_EXAMPLES` (4 pair、~150 chars) を messages として system + user の間に挿入。
+`--no-fewshot` で無効化可能 (default ON)。
+
+| run | fewshot | prompt | 出力 | 一人称揺れ | 物静か |
+|---|---|---|---|---|---|
+| 1 | ON | おはよう...元気ですか | 「んー、おはよう。まあ、いつもよりちょっと元気かな？」 | なし | ✓ |
+| 2 | ON | 同上 | 「おはよう。まあ、いつもよりちょっとだけ元気かもね。」 | なし | ✓ |
+| 3 | ON | 週末は何してましたか | 「うーん、家で映画を見てたよ。静かに過ごすのが好きだから。」 | なし | ✓ |
+| 4 | OFF | 同上 | 「んー、あまり詳しくないかも。最近は、部屋でゆっくりアニメを見たり、本を読んだりして過ごすことが多いかな。」 | なし | ✓ (文長め) |
+
+→ 採用 (default ON)。「あなた」混入は test set 全件で観測されず、効果は文長コンパクト化と
+キャラ説明 (「静かに過ごすのが好きだから」) の自然な挿入に表れる。
+TTFT への影響は fewshot ON warm 509-898ms / OFF 873ms で誤差レベル。
+
+**所見**: iv (max-sentences=2) が間接的に「あなた」混入を防いでいる構造あり。
+Phase 4a §2 の一人称揺れは **3 文目以降に集中** していた可能性 (cap=2 で表示されない)。
+vi は補強として有効。
+
 ### 残課題 (Phase 4b の C 残り)
 
-- 案 A/B/C の 3 文以上の扱いを実装 (現状 = 案 C 全部再生)
-- multi-turn history 設計
-- character drift / 一人称揺れ fewshot
+- v multi-turn history 設計
 
 ## 採用後の統合先
 

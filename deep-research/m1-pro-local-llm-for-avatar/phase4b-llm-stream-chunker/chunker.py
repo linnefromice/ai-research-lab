@@ -47,6 +47,15 @@ DEFAULT_SYSTEM_PROMPT = (
     "呼びかけと解釈してください。"
 )
 
+# vi (character drift / 一人称揺れ抑制): messages-based fewshot
+# 「あなた」混入と前向き締めを抑制し、「んー / えっと」系の物静か言い回しを定着させる
+FEWSHOT_EXAMPLES = [
+    ("元気ですか？", "んー、まあまあかな。"),
+    ("今日の予定は？", "特にないかな。インドアで本でも読もうかなって。"),
+    ("好きなアニメある？", "えっと、日常系が好きかも。"),
+    ("何してる？", "んー、ぼーっとしてる感じ。キミは何してたの？"),
+]
+
 
 def now_ms() -> float:
     return time.perf_counter() * 1000
@@ -58,13 +67,16 @@ def get_lm_model() -> str:
     return data["data"][0]["id"]
 
 
-def stream_lm(model: str, prompt: str, system_prompt: str):
+def stream_lm(model: str, prompt: str, system_prompt: str, fewshot=None):
+    messages = [{"role": "system", "content": system_prompt}]
+    if fewshot:
+        for q, a in fewshot:
+            messages.append({"role": "user", "content": q})
+            messages.append({"role": "assistant", "content": a})
+    messages.append({"role": "user", "content": prompt})
     body = json.dumps({
         "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
-        ],
+        "messages": messages,
         "stream": True,
         "temperature": 0.7,
     }).encode("utf-8")
@@ -91,11 +103,11 @@ def stream_lm(model: str, prompt: str, system_prompt: str):
                 yield delta
 
 
-def stream_sentences(model, prompt, system_prompt, t_origin):
+def stream_sentences(model, prompt, system_prompt, t_origin, fewshot=None):
     """yield (sentence, t_ttft_ms, t_done_ms) — t_origin からの経過 ms"""
     t_first = None
     buf = ""
-    for delta in stream_lm(model, prompt, system_prompt):
+    for delta in stream_lm(model, prompt, system_prompt, fewshot):
         if t_first is None:
             t_first = now_ms() - t_origin
         buf += delta
@@ -140,6 +152,17 @@ def main():
     # 空文字 SYSTEM_PROMPT を default 扱いにするため `or` で fallback
     parser.add_argument("--system", default=os.environ.get("SYSTEM_PROMPT") or DEFAULT_SYSTEM_PROMPT)
     parser.add_argument("--speaker", type=int, default=SPEAKER_ID)
+    parser.add_argument(
+        "--max-sentences",
+        type=int,
+        default=0,
+        help="N 文目で生成を打ち切り (Phase 4a 既知の 3 文制約違反隠蔽)。0 = 無効",
+    )
+    parser.add_argument(
+        "--no-fewshot",
+        action="store_true",
+        help="vi の fewshot を無効化 (default = 有効)",
+    )
     args = parser.parse_args()
 
     print(f"# prompt: {args.prompt}", file=sys.stderr)
@@ -171,9 +194,11 @@ def main():
         player_thread = threading.Thread(target=player_loop, daemon=True)
         player_thread.start()
 
+    fewshot = None if args.no_fewshot else FEWSHOT_EXAMPLES
     rows = []
+    capped = False
     for n, (sent, t_ttft, t_done) in enumerate(
-        stream_sentences(model, args.prompt, args.system, t_origin), 1
+        stream_sentences(model, args.prompt, args.system, t_origin, fewshot), 1
     ):
         print(f"[{n}] {t_done:.0f}ms (ttft={t_ttft:.0f}ms): {sent}", flush=True)
         row = {"n": n, "ttft": t_ttft, "sent_done": t_done}
@@ -185,6 +210,16 @@ def main():
             row["ready"] = t_s1
             audio_q.put((n, wav))
         rows.append(row)
+        # iv: N 文目で打ち切り (LLM stream を generator break で close)
+        if args.max_sentences > 0 and n >= args.max_sentences:
+            capped = True
+            print(
+                f"# capped at {args.max_sentences} sentences (LLM stream abort)",
+                file=sys.stderr,
+            )
+            break
+
+    _ = capped  # bench 出力に予約 (将来拡張用)
 
     if args.tts:
         audio_q.put(None)
