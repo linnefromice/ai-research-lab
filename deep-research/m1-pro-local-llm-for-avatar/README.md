@@ -91,7 +91,7 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 | 項目 | 内容 | 状態 |
 |---|---|---|
 | **iv** 3 文以上の打ち切り (案 A) | `chunker.py --max-sentences N`、`voice_to_avatar` で default 2 | ✅ 完了 (2026-04-29、4/4 run で意図通り動作) |
-| **v** multi-turn history | 会話 state 管理。N ターン保持 + summarize / truncate 戦略 | ⏳ 未着手 (高優先度: 会話らしさが大きく変わる) |
+| **v** multi-turn history | `~/.cache/avatar-chunker-history.json` に file-based session、`HISTORY_MAX_TURNS=5`。`reset_avatar` 関数追加 | ✅ 完了 (2026-04-29、2 turn 文脈継続を実機で確認) |
 | **vi** character drift / 一人称揺れ fewshot | `chunker.py` の messages に 4 pair fewshot 挿入 (default ON、`--no-fewshot` で無効) | ✅ 完了 (2026-04-29、文コンパクト化 + キャラ説明の自然挿入。一人称揺れは iv が間接的に抑制) |
 | **書き戻し** | Phase 4b 完了時、lab 側 `avatar-helpers.sh` を pipeline へ書き戻し PR (運用方針 §運用方針 参照) | ⏳ Phase 4b 完了基準達成後 |
 | Live2D | 顔 / 口パク / 表情。動作 OK 後で着手 | ⏳ Phase 5 推奨 (PoC では音優先) |
