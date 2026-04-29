@@ -36,7 +36,7 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 | キャラ設定 | ナオ (改名後 SYSTEM_PROMPT は Phase 4a ログ §4 / 発見 2) | ✅ 確定 (Phase 4a) |
 | **TTS** | **VOICEVOX** (docker `cpu-arm64-latest`, port 50021) / `8 春日部つむぎ:ノーマル` | ✅ 確定 (Phase 4b、2026-04-29、bench 中央値 534ms) |
 | **Stream chunker + 統合** | [`chunker.py`](./phase4b-llm-stream-chunker/chunker.py) (split + cap + fewshot + history)、`voice_to_avatar` / `reset_avatar` で統合 | ✅ **完了** (Phase 4b、2026-04-29、初音 1491ms / iv-vi 全実装) |
-| Live2D | 未着手 | 未着手 (Phase 5 推奨) |
+| Live2D | 未着手 | ⏳ **Phase 5** ([phase5-live2d/README.md](./phase5-live2d/README.md) に kickoff context 整備済) |
 
 ### 実測 latency
 
@@ -97,7 +97,7 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 | **v** multi-turn history | `~/.cache/avatar-chunker-history.json` に file-based session、`HISTORY_MAX_TURNS=5`。`reset_avatar` 関数追加 | ✅ 完了 (2026-04-29、2 turn 文脈継続を実機で確認) |
 | **vi** character drift / 一人称揺れ fewshot | `chunker.py` の messages に 4 pair fewshot 挿入 (default ON、`--no-fewshot` で無効) | ✅ 完了 (2026-04-29、文コンパクト化 + キャラ説明の自然挿入。一人称揺れは iv が間接的に抑制) |
 | **書き戻し** | lab 側 `avatar-helpers.sh` + `chunker.py` + 実装ログを pipeline へ書き戻し | ✅ 完了 (2026-04-29、[pipeline PR #432](https://github.com/linnefromice/ai-research-pipeline/pull/432)) |
-| Live2D | 顔 / 口パク / 表情。動作 OK 後で着手 | ⏳ Phase 5 推奨 (PoC では音優先) |
+| Live2D (Phase 5) | 顔 / 口パク / 表情。kickoff は [phase5-live2d/README.md](./phase5-live2d/README.md)。pipeline 側 deep-research 2 件 (`local-avatar-rendering-stack` / `open-llm-vtuber-deep-dive`) を起点に Live2D Cubism 5 Web SDK + Open-LLM-VTuber 推奨 | ⏳ 別セッションで開始 |
 
 ## 別タスク (このトピック内で扱う / 扱わない)
 

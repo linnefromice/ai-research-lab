@@ -1,0 +1,5 @@
+# Live2D model files (download per phase5-live2d/README.md, do not commit
+# — Free Material License は再配布 NG、また repo 肥大化防止)
+models/
+*.moc3
+*.moc
