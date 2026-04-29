@@ -70,7 +70,27 @@ Phase 5 は **「ナオに顔を与える + 口パク + 表情」** の独立し
 3. **WebGPU は急がない**: WebGL 2 で十分高 fps、Safari 18 + macOS Sequoia での stable 性は未確実
 4. **Live2D ライセンスは 2 段階**: 「Small-Scale (年商 < 1,000 万)」と「Primary Element + 2,000 万超」。VTuber を主収益化するなら 2,000 万閾値で Publication License 有償必須
 
-## Phase 5 で決める必要のあること
+## Phase 5 決断 (2026-04-29 確定)
+
+研究 2 件 (`local-avatar-rendering-stack` / `open-llm-vtuber-deep-dive`) の推奨と
+lab CLAUDE.md の「動くものを最速で / 捨てていい / 作り込みすぎない」原則に基づき、
+研究の **既定推奨セット** をそのまま採用。Phase 4b 完結漏れ消化
+([PR #6](https://github.com/linnefromice/ai-research-lab/pull/6)) の merge 直後に確定。
+
+| # | 決断対象 | 採用 | 補足 |
+|---|---|---|---|
+| **D1** | 統合テンプレ | **(A) Open-LLM-VTuber v1.2.x** | `tts_factory.py` に VOICEVOX plugin 自作 50-100 行 (chunker.py の `synth_voicevox` を移植)。`v1.2.1` で tag pin (v1.3+ で license 変更予定の回避) |
+| **D2** | モデル | **(a) mao_pro** (Live2D 公式 sample) | Free Material License 範囲、即時開始可。lab repo は public のため `.moc3 / .png` は commit しない (`phase5-live2d/models/.gitignore` で `*` 除外、download 手順を README に記載) |
+| **D3** | lip-sync 手法 | **(a) 音量ベース** (Web Audio AnalyserNode RMS) | `PARAM_MOUTH_OPEN_Y` への流し込み。Phase 5 (a) Minimum まではこれで十分、必要に応じて (b) lipsync-engine → (c) VOICEVOX phoneme stream へ段階 upgrade |
+| **D4** | chunker.py の役割 | **(γ) lab snapshot として残す** | OLV の `basic_memory_agent` + system prompt + memory 機構と機能比較するまで判断保留。**Phase 5 タスク 5 (LLM/ASR/TTS 統合) 後に (α) 廃止 / (β) backend 再利用 / (γ) snapshot 維持 のいずれかへ確定**。verify-persona.py のような CLI ベースのデバッグ用途で本流とは独立に保有可 |
+| **D5** | Phase 5 完了点 | **(a) Minimum** | mao_pro が voice_to_avatar 応答に合わせて口パクする録画 demo 1 回。(b) PoC (表情切替 + 30 分稼働) と (c) 配信品質 (OBS / 高品質 lip-sync / 独自モデル) は **別 phase 化** (Phase 6+) |
+
+判断材料 (各 D の選択肢比較・代替案・判断軸) は次節
+[Phase 5 で決める必要のあった事項 (判断材料の記録)](#phase-5-で決める必要のあった事項-判断材料の記録) に保持。
+
+## Phase 5 で決める必要のあった事項 (判断材料の記録)
+
+> **Note**: 上の「Phase 5 決断」節で全 D を既定推奨セットで確定済み。本節は判断材料 (Pro/Con / 代替) の記録として保持。新規読者は決断結果のみで実装に進める。
 
 ### D1: 統合テンプレの採用 (最大の判断)
 
@@ -162,20 +182,29 @@ python run_server.py
 # Browser: http://localhost:12393
 ```
 
-## Phase 5 サブタスク候補 (実装順、推奨)
+## Phase 5 サブタスク (D1-D5 確定後)
 
-| 順 | タスク | 推定 | 依存 |
-|---|---|---|---|
-| 1 | Phase 4b 完結漏れ消化 (persona 検証 + 用語修正) | 30-60 分 | なし |
-| 2 | テンプレ採用判断 (D1)、選定根拠を本 README に追記 | 30 分 | research 再読 |
-| 3 | テンプレ install + mao_pro が起動するか確認 | 1 時間 | D1 |
-| 4 | VOICEVOX plugin 自作 (OLV 採用なら) | 2-3 時間 | D1=A |
-| 5 | LLM/ASR/TTS のテンプレ統合 → 1 回応答 | 2-3 時間 | 4 |
-| 6 | 音量ベース lip-sync 動作確認 (D3=a) | 30 分 | 5 |
-| 7 | Phase 5 (a) Minimum 達成 → 録画 demo | 30 分 | 6 |
-| 8 | 表情切り替え (基本 3-5 種) | 2-3 時間 | 7 |
-| 9 | 30 分稼働 + 安定性検証 | 30 分 | 8 |
-| 10 | Phase 5 (b) PoC 達成 → 実装ログ作成 (pipeline 側) | 1 時間 | 9 |
+D5 = (a) Minimum 採用により、本 phase の scope は **1-7 まで**。8-10 は別 phase 化。
+
+| 順 | タスク | 推定 | 依存 | 状態 |
+|---|---|---|---|---|
+| 1 | Phase 4b 完結漏れ消化 (persona 検証 + 用語修正) | 30-60 分 | なし | ✅ 完了 ([PR #6](https://github.com/linnefromice/ai-research-lab/pull/6)) |
+| 2 | D1-D5 確定 + 本 README に追記 | 30 分 | research 再読 | ✅ 完了 (本 PR) |
+| 3 | OLV v1.2.1 を clone + uv sync + edge_tts 経由で起動確認 (mao_pro 表示) | 1 時間 | D1=A | ⏳ 次セッション |
+| 4 | `tts_factory.py` に VOICEVOX plugin 自作 (50-100 行、chunker.py の `synth_voicevox` を移植) | 2-3 時間 | 3 | ⏳ |
+| 5 | LM Studio + sherpa-onnx + 自作 VOICEVOX plugin を OLV に統合 → 1 ターン応答 | 2-3 時間 | 4 | ⏳ (D4 再評価ポイント) |
+| 6 | 音量ベース lip-sync 動作確認 (`PARAM_MOUTH_OPEN_Y`) | 30 分 | 5 | ⏳ |
+| 7 | Phase 5 (a) Minimum 達成 → 録画 demo + 実装ログ | 30 分 | 6 | ⏳ |
+
+### Phase 5 scope 外 (別 phase 化)
+
+D5 = (a) Minimum 確定により、以下は **Phase 5 では扱わない**。Phase 5 完了後に独立 phase で評価:
+
+| 元タスク | 内容 | 切り出し phase 候補 |
+|---|---|---|
+| 8 | 表情切り替え (基本 3-5 種、`model_dict.json` emotionMap) | Phase 6 (lip-sync 高品質化と同 phase でも可) |
+| 9 | 30 分稼働 + 安定性検証 + thermal/fps 計測 | Phase 6 / 7 |
+| 10 | Phase 5 (b) PoC 達成 → pipeline 側実装ログ作成 | Phase 6 完了時 |
 
 ## モデル / ライセンス前提 (lab は public)
 
