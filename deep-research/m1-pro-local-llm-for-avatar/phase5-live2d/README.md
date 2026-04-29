@@ -38,9 +38,10 @@ Phase 5 は **「ナオに顔を与える + 口パク + 表情」** の独立し
 
 | 項目 | 推定 | 状態 |
 |---|---|---|
-| persona 拡張 (PR #4) の M1 検証 | < 30 分 | merged 済、効果 5 run 比較未実施 |
+| persona 拡張 (PR #4) の M1 検証 | < 30 分 | ✅ 完了 (2026-04-29、OLD/NEW 5 trial 比較。詳細は [phase4b-llm-stream-chunker/README.md persona 拡張 A/B 検証 節](../phase4b-llm-stream-chunker/README.md#persona-拡張-ab-検証-2026-04-29pr-4-a99f0d3-の効果測定)、検証 script は [`verify-persona.py`](../phase4b-llm-stream-chunker/verify-persona.py)) |
 | Qwen3-TTS PoC (任意) | < 1 hr | feasibility report (lab `qwen3-tts-feasibility.md`) は WAIT 判定 |
-| README 用語修正 | 5 分 | `phase4b-tts-bench/README.md` の「WhisperKit Qwen3-TTS」 → 「Qwen3-TTS (MLX stack)」、pipeline `06-phase4b-implementation-log.md` も同様 |
+| README 用語修正 (lab 側) | 5 分 | ✅ 完了 (2026-04-29、`phase4b-tts-bench/README.md` 2 箇所 + topic `README.md` 1 箇所を「Qwen3-TTS (MLX stack)」へ統一。`qwen3-tts-feasibility.md` 内は誤り指摘のための引用なので保持) |
+| README 用語修正 (pipeline 側) | 5 分 | ⏳ pipeline `06-phase4b-implementation-log.md` L15 / L82 / L327 の「WhisperKit Qwen3-TTS」を「Qwen3-TTS (MLX stack)」へ。lab からは触らない (read-only)、pipeline 側で別 PR |
 | pipeline CI infrastructure 修復 | 別タスク | gitleaks/shellcheck が runner 不可で 3s fail (avatar とは無関係、将来の pipeline PR ブロッカー) |
 
 ## 採用方針 sketch (research 推奨)

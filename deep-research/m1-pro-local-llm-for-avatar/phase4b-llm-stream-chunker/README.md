@@ -153,9 +153,48 @@ shell: `reset_avatar` 関数 (avatar-helpers.sh) で履歴クリア。
 - summarize は不要 (Llama 3.1 8B = 128k context、5 turn で ~1000 token 余裕)
 - file format はそのまま LM Studio API request body に流せる (pipeline 書き戻し時の翻訳コストゼロ)
 
+### persona 拡張 A/B 検証 (2026-04-29、PR #4 a99f0d3 の効果測定)
+
+`v 検証 turn 1` で観測された confabulation (「ゆるキャン△ … ほら、可愛い犬も
+出てくるし。」) を抑制するため、PR #4 で SP 252→430 chars / fewshot 改修。
+本検証はその効果を A/B で測る Phase 4b 完結漏れ消化。
+
+実装: [`./verify-persona.py`](./verify-persona.py) (stdlib のみ、LM Studio 直叩き、
+chunker.py を経由しないので fewshot を含めた一括 A/B が可能)。
+
+**条件**: prompt = `"好きなアニメ教えて"`、`temperature=0.7`、5 trials/persona、
+LM Studio + Llama-3.1-Swallow-8B-Instruct-v0.5-4bit on M1 Pro 32GB。
+
+| persona | sanctioned 外作品 | キャラ矛盾 confab | 正しい好きポイント言及 | 3 文超過 (cap=0) |
+|---|---|---|---|---|
+| OLD (252 chars / 旧 fewshot) | **2/5** (#3 かぐや様、#4 Re:ゼロ) | **1/5** (#3「イケメンがたくさん」) | 0/5 | 0/5 |
+| **NEW (430 chars / 新 fewshot)** | 1/5 (#4 Re:ゼロ、ただし「あまり詳しくないけど」と hedging) | **0/5** | **4/5** (キャンプの雰囲気 / 田舎の静けさ / 部活感) | 3/5 |
+
+raw output は [`./verify-persona.py`](./verify-persona.py) を再実行して確認可能
+(temperature=0.7 のため毎回同じではないが、定性傾向は再現)。
+
+**主要発見**:
+
+1. **OLD #3「イケメンがたくさん出てくるのが好きだから」が最重要シグナル** —
+   「物静か / インドア / 落ち着いた」の SP 制約下でも、具体作品 anchor がない領域では
+   characterization が瞬間消失する。NEW では SP に好きポイントを先に書くことで、モデルが
+   trait を再現する際の **拠り所** ができる。
+2. **完全消滅ではなく hedging への移行が NEW の真の効果** — NEW #4 は Re:ゼロ confab
+   を残しているが「あまり詳しくないけど」と曖昧化を付与。「作品の細部を勝手に作らない
+   でください」の SP 指示が部分的に効き、誤情報の **強さ** が下がる。
+3. **正しい好きポイントの言及が 0/5 → 4/5** — 「キャンプの雰囲気 / 田舎の静けさ / のんびり
+   した部活感」がキャラ性として安定して出るようになり、avatar 全体の人格一貫性が向上。
+4. **副作用: 3 文超過が 3/5** — SP 自体が長くなった影響で応答が冗長化。
+   voice_to_avatar default `MAX_SENTENCES=2` cap で実運用上は隠蔽されるため放置可。
+
+**結論**: persona 拡張は (a) confabulation の質を改善 (キャラ矛盾の消滅、残留分の hedging 化)、
+(b) キャラ性 traits の安定化、を達成。v 検証 turn 1 で観測された「ゆるキャン△ + 犬」型の
+**具体的事実捏造** は OLD/NEW どちらの 5 trials でも再現せず、確率事象 (今回の trial 数では
+未引き当たり) と整理。Phase 5 でも cap=2 + persona 拡張の現状構成を維持。
+
 ### 残課題 (Phase 4b の C 残り)
 
-(なし — v 完了で C は全項目クローズ)
+(なし — v 完了 + persona 拡張検証完了で C は全項目クローズ)
 
 ## 採用後の統合先
 

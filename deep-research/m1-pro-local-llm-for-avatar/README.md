@@ -84,7 +84,7 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 
 | slug | 内容 | budget | 状態 |
 |---|---|---|---|
-| [phase4b-tts-bench/](./phase4b-tts-bench/) | TTS 候補比較 (VOICEVOX / AivisSpeech / WhisperKit Qwen3-TTS)、ナオ向け voice 選定 | 初音 latency < 700ms | ✅ 確定 (VOICEVOX `8 春日部つむぎ:ノーマル`、Qwen3-TTS は打ち切り) |
+| [phase4b-tts-bench/](./phase4b-tts-bench/) | TTS 候補比較 (VOICEVOX / AivisSpeech / Qwen3-TTS (MLX stack))、ナオ向け voice 選定 | 初音 latency < 700ms | ✅ 確定 (VOICEVOX `8 春日部つむぎ:ノーマル`、Qwen3-TTS は打ち切り) |
 | [phase4b-llm-stream-chunker/](./phase4b-llm-stream-chunker/) | LLM stream を `。/！/？/〜` で split → 1 文目完成と同時に TTS 起動 | 体感で「3 文制約違反」を隠蔽 | ✅ 主要部完了 (`voice_to_avatar` 統合済、初音 1491ms。iv-vi 残) |
 
 ## 残課題 (Phase 4b 完了基準)
