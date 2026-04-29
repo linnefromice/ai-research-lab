@@ -48,8 +48,9 @@ Avatar helpers loaded. Available functions:
     voice_to_llm [max_seconds]   VAD-recorded speech → ASR → LLM stream (no TTS)
                                    max_seconds = hard cap (default 10)
     voice_to_avatar [max_sec]    VAD-recorded speech → ASR → chunker → VOICEVOX TTS
-                                   (Phase 4b: full avatar pipeline, requires
-                                    VOICEVOX engine on port 50021 + chunker.py)
+                                   (Phase 4b: full avatar pipeline、history persistent)
+    reset_avatar                 Phase 4b v: 会話履歴をクリアして次の voice_to_avatar から
+                                   新規セッション開始
 
   Tunables (env vars)
     WHISPERKIT_PORT              default 50060
@@ -493,6 +494,16 @@ PYEOF
   local max_sent="${MAX_SENTENCES:-2}"
   SYSTEM_PROMPT="${SYSTEM_PROMPT:-}" \
   python3 "$chunker" "$transcript" --tts --bench --max-sentences "$max_sent"
+}
+
+# ─── Phase 4b (v): 会話履歴をクリア ───
+reset_avatar() {
+  local chunker="${__avatar_helpers_dir}/phase4b-llm-stream-chunker/chunker.py"
+  if [[ ! -f "$chunker" ]]; then
+    echo "ERROR: chunker not found at $chunker" >&2
+    return 1
+  fi
+  python3 "$chunker" --reset
 }
 
 # ─── Phase 3: KV cache pre-warmer ───

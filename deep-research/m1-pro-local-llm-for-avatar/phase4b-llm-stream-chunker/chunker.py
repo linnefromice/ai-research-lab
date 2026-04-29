@@ -36,6 +36,11 @@ SPEAKER_ID = int(os.environ.get("SPEAKER_ID", "8"))
 
 SENTENCE_END = "。！？〜"
 
+# v (multi-turn history): ~/.cache に file-based session を持つ
+# subprocess 間で persistent、HISTORY_MAX_TURNS で古い turn を切り捨て
+SESSION_PATH = os.path.expanduser("~/.cache/avatar-chunker-history.json")
+HISTORY_MAX_TURNS = 5  # 10 messages (user + assistant の pair × 5)
+
 DEFAULT_SYSTEM_PROMPT = (
     "あなたは「ナオ」という物静かなタイプのアイドル的なキャラクターです。"
     "一人称は「私」、相手のことは「キミ」と呼びます。物静かで人見知りですが、"
@@ -61,18 +66,48 @@ def now_ms() -> float:
     return time.perf_counter() * 1000
 
 
+def load_history():
+    """Load conversation history from SESSION_PATH. Returns [] if missing/invalid."""
+    if not os.path.exists(SESSION_PATH):
+        return []
+    try:
+        with open(SESSION_PATH) as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
+def save_history(history):
+    """Save conversation history, capping to HISTORY_MAX_TURNS turns (oldest dropped)."""
+    cap = HISTORY_MAX_TURNS * 2
+    if len(history) > cap:
+        history = history[-cap:]
+    os.makedirs(os.path.dirname(SESSION_PATH), exist_ok=True)
+    with open(SESSION_PATH, "w") as f:
+        json.dump(history, f, ensure_ascii=False, indent=2)
+
+
+def reset_history():
+    """Delete session file."""
+    if os.path.exists(SESSION_PATH):
+        os.remove(SESSION_PATH)
+
+
 def get_lm_model() -> str:
     with urllib.request.urlopen(f"{LM_URL}/models", timeout=5) as r:
         data = json.loads(r.read())
     return data["data"][0]["id"]
 
 
-def stream_lm(model: str, prompt: str, system_prompt: str, fewshot=None):
+def stream_lm(model: str, prompt: str, system_prompt: str, fewshot=None, history=None):
     messages = [{"role": "system", "content": system_prompt}]
     if fewshot:
         for q, a in fewshot:
             messages.append({"role": "user", "content": q})
             messages.append({"role": "assistant", "content": a})
+    if history:
+        messages.extend(history)
     messages.append({"role": "user", "content": prompt})
     body = json.dumps({
         "model": model,
@@ -103,11 +138,11 @@ def stream_lm(model: str, prompt: str, system_prompt: str, fewshot=None):
                 yield delta
 
 
-def stream_sentences(model, prompt, system_prompt, t_origin, fewshot=None):
+def stream_sentences(model, prompt, system_prompt, t_origin, fewshot=None, history=None):
     """yield (sentence, t_ttft_ms, t_done_ms) — t_origin からの経過 ms"""
     t_first = None
     buf = ""
-    for delta in stream_lm(model, prompt, system_prompt, fewshot):
+    for delta in stream_lm(model, prompt, system_prompt, fewshot, history):
         if t_first is None:
             t_first = now_ms() - t_origin
         buf += delta
@@ -146,7 +181,7 @@ def synth_voicevox(text: str, speaker_id: int) -> str:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("prompt", help="ユーザー発話")
+    parser.add_argument("prompt", nargs="?", default="", help="ユーザー発話 (--reset 単独実行時は省略可)")
     parser.add_argument("--tts", action="store_true", help="VOICEVOX で読み上げ")
     parser.add_argument("--bench", action="store_true", help="latency 表示")
     # 空文字 SYSTEM_PROMPT を default 扱いにするため `or` で fallback
@@ -163,7 +198,26 @@ def main():
         action="store_true",
         help="vi の fewshot を無効化 (default = 有効)",
     )
+    parser.add_argument(
+        "--reset",
+        action="store_true",
+        help="v: 会話履歴をクリア (prompt 省略で reset のみ)",
+    )
+    parser.add_argument(
+        "--no-history",
+        action="store_true",
+        help="v: 履歴を読まず保存もしない (single-shot mode)",
+    )
     args = parser.parse_args()
+
+    # v: --reset を最優先で処理
+    if args.reset:
+        reset_history()
+        print(f"# history reset ({SESSION_PATH})", file=sys.stderr)
+        if not args.prompt:
+            return
+    if not args.prompt:
+        parser.error("prompt is required (または --reset 単独実行)")
 
     print(f"# prompt: {args.prompt}", file=sys.stderr)
     if args.tts:
@@ -195,12 +249,18 @@ def main():
         player_thread.start()
 
     fewshot = None if args.no_fewshot else FEWSHOT_EXAMPLES
+    history = [] if args.no_history else load_history()
+    if history and args.bench:
+        print(f"# history: {len(history) // 2} turns loaded", file=sys.stderr)
+
     rows = []
     capped = False
+    full_response = ""
     for n, (sent, t_ttft, t_done) in enumerate(
-        stream_sentences(model, args.prompt, args.system, t_origin, fewshot), 1
+        stream_sentences(model, args.prompt, args.system, t_origin, fewshot, history), 1
     ):
         print(f"[{n}] {t_done:.0f}ms (ttft={t_ttft:.0f}ms): {sent}", flush=True)
+        full_response += sent
         row = {"n": n, "ttft": t_ttft, "sent_done": t_done}
         if args.tts:
             t_s0 = now_ms() - t_origin
@@ -220,6 +280,12 @@ def main():
             break
 
     _ = capped  # bench 出力に予約 (将来拡張用)
+
+    # v: 履歴を保存 (--no-history 時はスキップ、空応答もスキップ)
+    if not args.no_history and full_response.strip():
+        history.append({"role": "user", "content": args.prompt})
+        history.append({"role": "assistant", "content": full_response})
+        save_history(history)
 
     if args.tts:
         audio_q.put(None)

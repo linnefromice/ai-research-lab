@@ -128,9 +128,34 @@ TTFT への影響は fewshot ON warm 509-898ms / OFF 873ms で誤差レベル。
 Phase 4a §2 の一人称揺れは **3 文目以降に集中** していた可能性 (cap=2 で表示されない)。
 vi は補強として有効。
 
+### v 検証 (2026-04-29、multi-turn flow)
+
+実装: `~/.cache/avatar-chunker-history.json` に file-based session、`HISTORY_MAX_TURNS=5`
+で古い turn 切り捨て。format は OpenAI/Anthropic 互換の `[{role, content}, ...]`。
+
+flag:
+- `--reset` 履歴クリア (prompt 省略可)
+- `--no-history` 履歴を読まず保存もしない (single-shot)
+
+shell: `reset_avatar` 関数 (avatar-helpers.sh) で履歴クリア。
+
+検証 (2 turn の文脈継続):
+
+| turn | prompt | response | 文脈継続 |
+|---|---|---|---|
+| 1 | 好きなアニメ教えて | 「日常系なら『ゆるキャン△』とか好きかな。ほら、可愛い犬も出てくるし。」 | (新規) |
+| 2 | それの何が好き？ | 「んー、キャンプの雰囲気が良いかな。自然の中で過ごすのが好きだから。」 | ✅ 「それ」=ゆるキャン△、キャンプの話で応答 |
+
+→ 採用 (default ON、`--no-history` で OFF)。
+
+設計判断:
+- Long-running session ではなく毎回 spawn + file IO: avatar-helpers.sh の API を変えずに済む
+- summarize は不要 (Llama 3.1 8B = 128k context、5 turn で ~1000 token 余裕)
+- file format はそのまま LM Studio API request body に流せる (pipeline 書き戻し時の翻訳コストゼロ)
+
 ### 残課題 (Phase 4b の C 残り)
 
-- v multi-turn history 設計
+(なし — v 完了で C は全項目クローズ)
 
 ## 採用後の統合先
 
