@@ -7,8 +7,9 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 ## 起点 (親リポの研究成果)
 
 このトピックの研究レポート / 実装ログは **ai-research-pipeline (private)** に存在する。Lab 側
-からは Read で参照する。**例外: `avatar-helpers.sh` は Phase 4b 期間中 lab を SoT とし、
-Phase 4b 完了時に pipeline へ書き戻す** (詳細は末尾 §運用方針 参照、方針反転日 2026-04-29)。
+からは Read で参照する。Phase 4b 完了 (2026-04-29、pipeline PR #432) で `avatar-helpers.sh`
++ `chunker.py` の SoT は pipeline 側に戻った。lab 側の同ファイルは Phase 4b 完了時点の
+**snapshot** として保持 (将来編集は pipeline 側、詳細は末尾 §運用方針 参照)。
 
 | ファイル | 内容 |
 |---|---|
@@ -18,8 +19,10 @@ Phase 4b 完了時に pipeline へ書き戻す** (詳細は末尾 §運用方針
 | `.../02-analysis.md` | 比較分析 |
 | `.../03-validation.md` | 検証 |
 | `.../04-phase3-implementation-log.md` | **Phase 3 実装ログ** (PR #428) |
-| `.../05-phase4-implementation-log.md` | **Phase 4a 実装ログ** (PR #429) ← 直近の状態 |
-| `.../avatar-helpers.sh` | Phase 4a で完成した shell helpers の **凍結版** (元 SoT)。Phase 4b 中は [`./avatar-helpers.sh`](./avatar-helpers.sh) が SoT |
+| `.../05-phase4-implementation-log.md` | **Phase 4a 実装ログ** (PR #429) |
+| `.../06-phase4b-implementation-log.md` | **Phase 4b 実装ログ** (PR #432) ← 直近 |
+| `.../avatar-helpers.sh` | Phase 4b 完了後の **SoT** (lab 側の同ファイルは snapshot) |
+| `.../phase4b-llm-stream-chunker/chunker.py` | Phase 4b 完了後の **SoT** (lab 側の同ファイルは snapshot) |
 | `.../_sources.json` | 一次情報 URL 集 |
 
 ## 現在の確定構成
@@ -93,7 +96,7 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 | **iv** 3 文以上の打ち切り (案 A) | `chunker.py --max-sentences N`、`voice_to_avatar` で default 2 | ✅ 完了 (2026-04-29、4/4 run で意図通り動作) |
 | **v** multi-turn history | `~/.cache/avatar-chunker-history.json` に file-based session、`HISTORY_MAX_TURNS=5`。`reset_avatar` 関数追加 | ✅ 完了 (2026-04-29、2 turn 文脈継続を実機で確認) |
 | **vi** character drift / 一人称揺れ fewshot | `chunker.py` の messages に 4 pair fewshot 挿入 (default ON、`--no-fewshot` で無効) | ✅ 完了 (2026-04-29、文コンパクト化 + キャラ説明の自然挿入。一人称揺れは iv が間接的に抑制) |
-| **書き戻し** | Phase 4b 完了時、lab 側 `avatar-helpers.sh` を pipeline へ書き戻し PR (運用方針 §運用方針 参照) | ⏳ Phase 4b 完了基準達成後 |
+| **書き戻し** | lab 側 `avatar-helpers.sh` + `chunker.py` + 実装ログを pipeline へ書き戻し | ✅ 完了 (2026-04-29、[pipeline PR #432](https://github.com/linnefromice/ai-research-pipeline/pull/432)) |
 | Live2D | 顔 / 口パク / 表情。動作 OK 後で着手 | ⏳ Phase 5 推奨 (PoC では音優先) |
 
 ## 別タスク (このトピック内で扱う / 扱わない)
@@ -121,13 +124,15 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 - Lab は **public**。秘匿情報を入れない (詳細は [../../README.md](../../README.md))
 - 親リポの研究ファイル (00-04, 05, reports/, _sources.json) は **Read のみ**。lab からの作業で改変しない
 
-## 運用方針 — `avatar-helpers.sh` の SoT
+## 運用方針 — `avatar-helpers.sh` / `chunker.py` の SoT
 
 | 期間 | SoT | 備考 |
 |---|---|---|
 | Phase 4a 完了時 (2026-04-28) | pipeline 側 | 元の方針 |
-| **Phase 4b 期間中 (2026-04-29 〜)** | **lab 側 [`./avatar-helpers.sh`](./avatar-helpers.sh)** | TTS / chunker の試作で頻繁に編集するため、往復コスト回避 |
-| Phase 4b 完了時 | pipeline へ書き戻し | 完了時に pipeline 側で別 PR を切り、SoT を pipeline へ戻す |
+| Phase 4b 期間中 (2026-04-29) | lab 側 (`./avatar-helpers.sh`) | TTS / chunker の試作で頻繁に編集するため、往復コスト回避 |
+| **Phase 4b 完了後 (2026-04-29 〜)** | **pipeline 側に復帰** | 書き戻し PR [pipeline #432](https://github.com/linnefromice/ai-research-pipeline/pull/432) で `avatar-helpers.sh` + `chunker.py` + `06-phase4b-implementation-log.md` を pipeline へ反映 |
 
-Phase 4b 中の編集は lab 側の `avatar-helpers.sh` に対して行う。pipeline 側のファイルは
-Phase 4a 時点の凍結版として残し、編集しない (差分は書き戻し PR でまとめる)。
+**現状 (2026-04-29 以降)**:
+- 将来の編集は **pipeline 側で行う**。lab 側の同ファイルは Phase 4b 完了時点の snapshot として保持
+- lab で再検証したくなったら `cp ../../../../ai-research-pipeline/.../avatar-helpers.sh ./avatar-helpers.sh` で pipeline 側を取り込む
+- 起動シーケンスは lab snapshot を `source ./avatar-helpers.sh` で使うか、pipeline 側を `source ../../../../ai-research-pipeline/.../avatar-helpers.sh` で使うか、どちらも可
