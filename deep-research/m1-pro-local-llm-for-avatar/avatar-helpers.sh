@@ -55,11 +55,12 @@ Avatar helpers loaded. Available functions:
     WHISPERKIT_PORT              default 50060
     WHISPERKIT_MODEL             default large-v3-v20240930_turbo
     LLM_MODEL                    default llama-3.1-swallow-8b-instruct-v0.5:2
-    SYSTEM_PROMPT                 (set this before voice_to_llm / ttft_sys)
+    SYSTEM_PROMPT                 (set this before voice_to_llm / ttft_sys / voice_to_avatar)
     ASR_PROMPT                   default ""  (Phase 4: WhisperKit prompt is broken, disabled)
     VAD_MAX_SEC                  default 10                  (Phase 4)
     VAD_SILENCE_SEC              default 0.8                 (Phase 4)
     VAD_THRESHOLD                default 1   (sox %)         (Phase 4)
+    MAX_SENTENCES                default 2   (Phase 4b iv)   voice_to_avatar の N 文 cap (0 で無効)
 EOF
 }
 
@@ -488,8 +489,10 @@ PYEOF
   echo "💬 ナオ:"
 
   # Stage 2: chunker.py で LLM stream + 句読点 split + VOICEVOX TTS
+  # MAX_SENTENCES default 2 (Phase 4a 「3 文以上 NG」を表示側で隠蔽)、0 で無効
+  local max_sent="${MAX_SENTENCES:-2}"
   SYSTEM_PROMPT="${SYSTEM_PROMPT:-}" \
-  python3 "$chunker" "$transcript" --tts --bench
+  python3 "$chunker" "$transcript" --tts --bench --max-sentences "$max_sent"
 }
 
 # ─── Phase 3: KV cache pre-warmer ───

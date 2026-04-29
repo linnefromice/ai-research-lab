@@ -88,13 +88,13 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 
 主要部 (B + C 統合) は完了。完了宣言までの残タスク:
 
-| 項目 | 内容 | 優先度 |
+| 項目 | 内容 | 状態 |
 |---|---|---|
-| **iv** 3 文以上の打ち切り (案 A) | `chunker.py` に `--max-sentences N` 追加。N+1 文目以降の synth/play を抑止し、生成自体も abort | 中 (Phase 4a 既知の hot button、確率事象) |
-| **v** multi-turn history | 会話 state 管理。N ターン保持 + summarize / truncate 戦略 | 高 (avatar の会話らしさが大きく変わる) |
-| **vi** character drift / 一人称揺れ fewshot | system prompt に fewshot 例文追加 → 「キミ」指定で「あなた」混入を抑制 | 中 |
-| **書き戻し** | Phase 4b 完了時、lab 側 `avatar-helpers.sh` を pipeline へ書き戻し PR (運用方針 §運用方針 参照) | 高 (SoT 巻き戻し) |
-| Live2D | 顔 / 口パク / 表情。動作 OK 後で着手 | 中-低 (PoC では音優先) |
+| **iv** 3 文以上の打ち切り (案 A) | `chunker.py --max-sentences N`、`voice_to_avatar` で default 2 | ✅ 完了 (2026-04-29、4/4 run で意図通り動作) |
+| **v** multi-turn history | 会話 state 管理。N ターン保持 + summarize / truncate 戦略 | ⏳ 未着手 (高優先度: 会話らしさが大きく変わる) |
+| **vi** character drift / 一人称揺れ fewshot | `chunker.py` の messages に 4 pair fewshot 挿入 (default ON、`--no-fewshot` で無効) | ✅ 完了 (2026-04-29、文コンパクト化 + キャラ説明の自然挿入。一人称揺れは iv が間接的に抑制) |
+| **書き戻し** | Phase 4b 完了時、lab 側 `avatar-helpers.sh` を pipeline へ書き戻し PR (運用方針 §運用方針 参照) | ⏳ Phase 4b 完了基準達成後 |
+| Live2D | 顔 / 口パク / 表情。動作 OK 後で着手 | ⏳ Phase 5 推奨 (PoC では音優先) |
 
 ## 別タスク (このトピック内で扱う / 扱わない)
 
