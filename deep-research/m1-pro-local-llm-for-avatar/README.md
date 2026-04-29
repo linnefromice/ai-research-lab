@@ -32,8 +32,8 @@ Phase 4b 完了時に pipeline へ書き戻す** (詳細は末尾 §運用方針
 | VAD | `sox` `silence` effect (0.8s 無音終了 + leading silence 除去) | ✅ 確定 (Phase 4a) |
 | キャラ設定 | ナオ (改名後 SYSTEM_PROMPT は Phase 4a ログ §4 / 発見 2) | ✅ 確定 (Phase 4a) |
 | **TTS** | **VOICEVOX** (docker `cpu-arm64-latest`, port 50021) / `8 春日部つむぎ:ノーマル` | ✅ 確定 (Phase 4b、2026-04-29、bench 中央値 534ms) |
-| **Stream chunker + 統合** | [`chunker.py`](./phase4b-llm-stream-chunker/chunker.py) (句読点 split + VOICEVOX TTS)、`voice_to_avatar` で full pipeline 統合 | ✅ 主要部完了 (Phase 4b、2026-04-29、初音 1491ms) |
-| Live2D | 未着手 | 未着手 |
+| **Stream chunker + 統合** | [`chunker.py`](./phase4b-llm-stream-chunker/chunker.py) (split + cap + fewshot + history)、`voice_to_avatar` / `reset_avatar` で統合 | ✅ **完了** (Phase 4b、2026-04-29、初音 1491ms / iv-vi 全実装) |
+| Live2D | 未着手 | 未着手 (Phase 5 推奨) |
 
 ### 実測 latency
 
@@ -86,7 +86,7 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 
 ## 残課題 (Phase 4b 完了基準)
 
-主要部 (B + C 統合) は完了。完了宣言までの残タスク:
+**Phase 4b の B + C は全項目完了** (iv/v/vi 含む)。残るは pipeline への書き戻しと Phase 5。
 
 | 項目 | 内容 | 状態 |
 |---|---|---|
