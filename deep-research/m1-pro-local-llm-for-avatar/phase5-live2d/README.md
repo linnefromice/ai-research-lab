@@ -189,12 +189,12 @@ D5 = (a) Minimum 採用により、本 phase の scope は **1-7 まで**。8-10
 | 順 | タスク | 推定 | 依存 | 状態 |
 |---|---|---|---|---|
 | 1 | Phase 4b 完結漏れ消化 (persona 検証 + 用語修正) | 30-60 分 | なし | ✅ 完了 ([PR #6](https://github.com/linnefromice/ai-research-lab/pull/6)) |
-| 2 | D1-D5 確定 + 本 README に追記 | 30 分 | research 再読 | ✅ 完了 (本 PR) |
-| 3 | OLV v1.2.1 を clone + uv sync + edge_tts 経由で起動確認 (mao_pro 表示) | 1 時間 | D1=A | ⏳ 次セッション |
-| 4 | `tts_factory.py` に VOICEVOX plugin 自作 (50-100 行、chunker.py の `synth_voicevox` を移植) | 2-3 時間 | 3 | ⏳ |
-| 5 | LM Studio + sherpa-onnx + 自作 VOICEVOX plugin を OLV に統合 → 1 ターン応答 | 2-3 時間 | 4 | ⏳ (D4 再評価ポイント) |
-| 6 | 音量ベース lip-sync 動作確認 (`PARAM_MOUTH_OPEN_Y`) | 30 分 | 5 | ⏳ |
-| 7 | Phase 5 (a) Minimum 達成 → 録画 demo + 実装ログ | 30 分 | 6 | ⏳ |
+| 2 | D1-D5 確定 + 本 README に追記 | 30 分 | research 再読 | ✅ 完了 ([PR #7](https://github.com/linnefromice/ai-research-lab/pull/7)) |
+| 3 | OLV v1.2.1 を clone + uv sync + edge_tts 経由で起動確認 (mao_pro 表示) | 1 時間 | D1=A | ✅ 完了 (本 PR、edge_tts は上流 403 で詰まったが mao_pro 表示までは確認) |
+| 4 | `tts_factory.py` に VOICEVOX plugin 自作 (50-100 行、chunker.py の `synth_voicevox` を移植) | 2-3 時間 | 3 | ✅ 完了 (本 PR、ただし Pydantic schema 拡張も必要で +1h、詳細は [olv-patches/](./olv-patches/)) |
+| 5 | LM Studio + sherpa-onnx + 自作 VOICEVOX plugin を OLV に統合 → 1 ターン応答 | 2-3 時間 | 4 | ✅ 完了 (本 PR、D4 再評価入力を取得) |
+| 6 | 音量ベース lip-sync 動作確認 (`PARAM_MOUTH_OPEN_Y`) | 30 分 | 5 | ✅ 完了 (本 PR、口パク + 音声同期 確認済) |
+| 7 | Phase 5 (a) Minimum 達成 → 録画 demo + 実装ログ | 30 分 | 6 | ✅ 完了 (本 PR、実装ログ下記。録画 demo は user 主導で別途) |
 
 ### Phase 5 scope 外 (別 phase 化)
 
@@ -205,6 +205,85 @@ D5 = (a) Minimum 確定により、以下は **Phase 5 では扱わない**。Ph
 | 8 | 表情切り替え (基本 3-5 種、`model_dict.json` emotionMap) | Phase 6 (lip-sync 高品質化と同 phase でも可) |
 | 9 | 30 分稼働 + 安定性検証 + thermal/fps 計測 | Phase 6 / 7 |
 | 10 | Phase 5 (b) PoC 達成 → pipeline 側実装ログ作成 | Phase 6 完了時 |
+
+## サブタスク 3-7 実装ログ (2026-04-30)
+
+### 結果
+
+✅ **Phase 5 (a) Minimum を技術的に達成** — mao_pro が voice_to_avatar 応答に
+合わせて口パクし、日本語音声 (春日部つむぎ:ノーマル) で返答するブラウザ avatar
+が動く状態に到達。LM Studio Swallow 8B + sherpa-onnx ASR + VOICEVOX TTS +
+Live2D mao_pro の構成。
+
+(録画 demo は user 主導で別途取得予定。本 PR は実装パッチと記録のみ。)
+
+### 経緯
+
+1. **OLV v1.2.1 install + edge_tts で動作確認 (Phase 1)**
+   - clone + `uv sync --python 3.10` (Python 3.10.4 pyenv 経由) → 起動 OK
+   - SenseVoice ASR モデル auto-download (999MB / ~30s + 展開 ~80s)
+   - 起動シーケンス: `cd $OLV && uv run run_server.py`、初回 82 秒、 2 回目以降 2 秒 (DL skip)
+   - localhost:12393 で mao_pro 表示確認 ✅
+   - **発話 → ASR → LLM 応答までは到達したが TTS で 403** (edge-tts ライブラリ × Microsoft 上流)
+
+2. **edge-tts 403 の切り分け**
+   - OLV 経由 / edge-tts CLI 単独 ともに 403 → ライブラリ単独で再現
+   - エラー: `wss://speech.platform.bing.com/.../v1: 403, Invalid response status`
+   - 上流の `Sec-MS-GEC` token rotation に edge-tts ライブラリが追従できない既知問題
+   - **edge-tts 修復は token 再 rotation で再発リスク** → 計画通り サブタスク 4 (VOICEVOX plugin) に前倒し
+
+3. **VOICEVOX plugin 自作 (サブタスク 4)**
+   - OLV TTS plugin 作法: `TTSInterface` 継承 + `generate_audio(text) -> wav path`
+   - `src/open_llm_vtuber/tts/voicevox_tts.py` 新規 (Phase 4b chunker.py の `synth_voicevox` を class 化)
+   - `tts_factory.py` に `elif engine_type == "voicevox_tts"` branch 追加
+   - **Pydantic schema 拡張も必要** (これは research 想定外):
+     - `config_manager/tts.py` に `VoicevoxTTSConfig` class 追加
+     - `tts_model: Literal[...]` に `"voicevox_tts"` 追加
+     - `voicevox_tts: Optional[...]` field 追加
+     - `DESCRIPTIONS` map に entry 追加
+     - validator dispatch に branch 追加
+   - 全 patch / 適用手順は [olv-patches/](./olv-patches/) を参照
+
+4. **conf.yaml 編集 (yq による pin)**
+   - LM Studio (D1=A + Swallow 8B) / VOICEVOX (春日部つむぎ:ノーマル) / MCP off
+   - persona V1 = chunker.py NEW_SP (430 chars) を移植
+   - 全コマンドは [olv-patches/conf-overrides.md](./olv-patches/conf-overrides.md)
+   - **trap**: `tts_config` は `character_config` 配下、`.tts_config.*` (top level) で書くと yq が rogue な top-level key を作ってしまう (実際にやらかした)
+
+5. **動作確認 (サブタスク 5-6)**
+   - 発話 → ASR → LLM (lmstudio_llm) → VOICEVOX synth → browser audio + mao_pro 口パク ✅
+   - 口パクは音量ベース (Web Audio AnalyserNode RMS → `ParamMouthOpenY`)、想定通り
+
+6. **persona V2 緩和 (副次発見対応)**
+   - 直近 11 ターン中 4 回 (36%) 「んー、あんまり詳しくないかも」 が出現
+   - 朝の挨拶や、答えた直後にも不自然に付加されるなど、**hard-code フレーズが LLM に定型語尾として過学習** されている兆候
+   - persona V1 → V2 の差分は [olv-patches/conf-overrides.md](./olv-patches/conf-overrides.md#persona-v1--v2-の差分)
+   - V2 適用 → サーバー restart → 体感で改善確認 (定量比較は次回 chat_history JSON で検証可能)
+
+### 副次発見 (D4 評価入力 + Phase 6 候補)
+
+| # | 発見 | impact | 対処 / 記録 |
+|---|---|---|---|
+| 1 | edge-tts は Microsoft 上流の token rotation で頻繁に 403 | high (依存) | 「踏まないリスト」に追加。Phase 5 では VOICEVOX に乗り換え |
+| 2 | OLV plugin 自作は schema 5 箇所も触る必要あり (research 想定外) | medium (見積もり) | 次回 plugin 自作時は schema 込みの工数見積もりへ |
+| 3 | **OLV native では 3 文制約が破られる** (例: markdown bullet list の長文応答) | **high (UX、D4 評価)** | サブタスク 5 後 D4 評価で **(β) chunker.py を backend 再利用** または **(δ) OLV agent に cap 機構追加** が現実候補 |
+| 4 | OLV codebase に fewshot 機構なし | low (参考) | chunker.py の `FEWSHOT_EXAMPLES` は OLV へ伝播していない (system prompt 経路のみ)。D4 = (β) 採用時の話題 |
+| 5 | persona の hard-code フレーズは LLM が定型語尾として過学習 | medium (UX) | persona prompt は trait の指示にとどめ、具体フレーズは fewshot 側 (chunker.py 復活時) に移すのが望ましい |
+| 6 | OLV chat_history JSON が A/B 比較に使える形で永続化 | low (再利用可能) | `chat_history/<conf_uid>/<timestamp>_<uuid>.json` を verify-persona.py 後継の検証で活用可能 |
+| 7 | yq で path チェックを忘れて rogue な top-level key を作成事故 | low (作業注意) | conf.yaml schema 全体把握 → 正確な path 指定 → 編集後の `keys` 検証 を習慣化 |
+
+### Phase 5 完了状態
+
+D5 = (a) Minimum (録画 demo 1 回) は技術的には達成済み。録画 demo の取得自体は
+user 主導で実施することで Phase 5 は形式的にも完全クローズになる。
+
+D4 (chunker.py 役割) の評価材料が揃った状態:
+- chunker.py の `--max-sentences=2` (Phase 4b) で完全に 2 文以下を強制できる
+- OLV `basic_memory_agent` で persona に「3 文以内 NG」と書いても破られる
+- → (γ) lab snapshot 維持 は短期判断として妥当、長期は **(β) chunker.py を backend として再利用** または **(δ) OLV agent に cap 機構を追加** が候補
+
+D4 確定は本 PR の scope 外 (Phase 5 完了後の次セッション) とし、副次発見 3+5 と
+合わせて Phase 6 (もしくは Phase 5 closeout PR) で扱う。
 
 ## モデル / ライセンス前提 (lab は public)
 
