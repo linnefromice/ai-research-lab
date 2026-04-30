@@ -35,8 +35,9 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 | VAD | `sox` `silence` effect (0.8s 無音終了 + leading silence 除去) | ✅ 確定 (Phase 4a) |
 | キャラ設定 | ナオ (改名後 SYSTEM_PROMPT は Phase 4a ログ §4 / 発見 2) | ✅ 確定 (Phase 4a) |
 | **TTS** | **VOICEVOX** (docker `cpu-arm64-latest`, port 50021) / `8 春日部つむぎ:ノーマル` | ✅ 確定 (Phase 4b、2026-04-29、bench 中央値 534ms) |
-| **Stream chunker + 統合** | [`chunker.py`](./phase4b-llm-stream-chunker/chunker.py) (split + cap + fewshot + history)、`voice_to_avatar` / `reset_avatar` で統合 | ✅ **完了** (Phase 4b、2026-04-29、初音 1491ms / iv-vi 全実装) |
-| Live2D | 未着手 | ⏳ **Phase 5** ([phase5-live2d/README.md](./phase5-live2d/README.md) に kickoff context 整備済) |
+| **Stream chunker + CLI 統合** | [`chunker.py`](./phase4b-llm-stream-chunker/chunker.py) (split + cap + fewshot + history)、`voice_to_avatar` / `reset_avatar` で統合 | ✅ **完了** (Phase 4b、2026-04-29、初音 1491ms / iv-vi 全実装)。Phase 5 D4 評価で **γ snapshot 維持** ([D4-evaluation.md](./phase5-live2d/D4-evaluation.md))、本流は OLV 側 |
+| **統合テンプレ** | Open-LLM-VTuber `v1.2.1` + 自作 `voicevox_tts` plugin (lab patch) | ✅ Phase 5 (a) Minimum 達成 (2026-04-30、[PR #8](https://github.com/linnefromice/ai-research-lab/pull/8)、patch は [phase5-live2d/olv-patches/](./phase5-live2d/olv-patches/)) |
+| **Live2D 描画** | mao_pro (Free Material License) / 音量ベース 口パク (Web Audio AnalyserNode RMS) | ✅ Phase 5 達成、表情切替 / 30 分稼働は **Phase 6** ([phase6-poc/README.md](./phase6-poc/README.md)) |
 
 ### 実測 latency
 
@@ -49,7 +50,12 @@ M1 Pro 32GB MacBook Pro (2021) で動かす AI avatar (ローカル LLM + ASR + 
 | **4b** | **chunker 1 文目 play_start** ("おはよう" prompt) | **1202ms** |
 | **4b** | **voice_to_avatar 初音** (生成音声 "今日はいい天気ですね") | **1491ms** ← budget < 2.5s 達成 |
 
-## 推奨 Avatar 起動シーケンス (Phase 4b 版)
+## 推奨 Avatar 起動シーケンス
+
+Phase 5 以降は **OLV (Open-LLM-VTuber) 経由が本流** ([phase5-live2d/olv-patches/conf-overrides.md](./phase5-live2d/olv-patches/conf-overrides.md) の手順)。
+以下の Phase 4b 版 CLI シーケンスは **γ snapshot として残る chunker.py 単独検証用** ([D4 評価](./phase5-live2d/D4-evaluation.md))。
+
+### Phase 4b 版 (CLI、`chunker.py` 単体検証用)
 
 ```bash
 # 1. helpers をシェルに読み込み (lab 側 SoT を source)
@@ -97,7 +103,9 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 | **v** multi-turn history | `~/.cache/avatar-chunker-history.json` に file-based session、`HISTORY_MAX_TURNS=5`。`reset_avatar` 関数追加 | ✅ 完了 (2026-04-29、2 turn 文脈継続を実機で確認) |
 | **vi** character drift / 一人称揺れ fewshot | `chunker.py` の messages に 4 pair fewshot 挿入 (default ON、`--no-fewshot` で無効) | ✅ 完了 (2026-04-29、文コンパクト化 + キャラ説明の自然挿入。一人称揺れは iv が間接的に抑制) |
 | **書き戻し** | lab 側 `avatar-helpers.sh` + `chunker.py` + 実装ログを pipeline へ書き戻し | ✅ 完了 (2026-04-29、[pipeline PR #432](https://github.com/linnefromice/ai-research-pipeline/pull/432)) |
-| Live2D (Phase 5) | 顔 / 口パク / 表情。kickoff は [phase5-live2d/README.md](./phase5-live2d/README.md)。pipeline 側 deep-research 2 件 (`local-avatar-rendering-stack` / `open-llm-vtuber-deep-dive`) を起点に Live2D Cubism 5 Web SDK + Open-LLM-VTuber 推奨 | ⏳ 別セッションで開始 |
+| Live2D (Phase 5 = D5(a) Minimum) | mao_pro 表示 + 音量ベース 口パク + 春日部つむぎ:ノーマル の音声応答。kickoff は [phase5-live2d/README.md](./phase5-live2d/README.md)、構成は OLV `v1.2.1` + 自作 voicevox_tts plugin | ✅ 達成 (2026-04-30、[PR #8](https://github.com/linnefromice/ai-research-lab/pull/8))。録画 demo は user 主導で別途 |
+| **D4 評価** (chunker.py 役割確定) | Phase 5 副次発見「3 文制約破り」 を踏まえて α/β/γ/δ/ε から **δ + ε + γ snapshot 維持** を採用 | ✅ 完了 (2026-04-30、[D4-evaluation.md](./phase5-live2d/D4-evaluation.md)) |
+| Phase 6 = D5(b) PoC | D4 実装 (δ: OLV agent cap + ε: persona V3) + 表情切替 + 30 分稼働 + pipeline 書き戻し | ⏳ 別セッションで開始 ([phase6-poc/README.md](./phase6-poc/README.md) に kickoff context) |
 
 ## 別タスク (このトピック内で扱う / 扱わない)
 
