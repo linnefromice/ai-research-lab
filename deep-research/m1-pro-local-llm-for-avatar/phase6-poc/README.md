@@ -30,6 +30,66 @@ Phase 5 (a) Minimum は技術的に達成済 ([PR #8](https://github.com/linnefr
 OLV plugin patch は [../phase5-live2d/olv-patches/](../phase5-live2d/olv-patches/) に snapshot。
 実機: M1 Pro 32GB / macOS Sequoia 15.7.3 / Chrome。
 
+### 起動手順
+
+セットアップ済みのアバターを再度立ち上げる手順。3 サービス (TTS / LLM / 統合) を
+**この順番** で起動する — OLV は起動時に LM Studio と VOICEVOX へ接続を試みるため、
+先に下の 2 つを上げてから OLV を起動する。
+
+#### クイックスタート (推奨)
+
+トピックルートの [`../avatar-start.sh`](../avatar-start.sh) が VOICEVOX 起動・LM Studio
+検知・OLV 起動をまとめて行う:
+
+```bash
+cd ../        # deep-research/m1-pro-local-llm-for-avatar/
+./avatar-start.sh
+```
+
+スクリプトの動作:
+
+1. **VOICEVOX** — `voicevox` コンテナを `docker start` で再開し、`/version` で応答確認。
+   コンテナが無ければ `docker run` の手順を表示して停止。
+2. **LM Studio** — port 1234 を検知し、未応答なら**警告のみ出して続行**
+   (GUI アプリなので自動起動はしない。Swallow 8B の Load + Local Server ON はユーザーが行う)。
+3. **OLV** — port 12393 の二重起動を防いだうえで `uv run run_server.py` を
+   フォアグラウンド起動。数秒後にブラウザで `http://localhost:12393` を自動で開く。
+
+OLV の clone 先が標準と違う場合は `OLV_DIR` で上書き:
+
+```bash
+OLV_DIR=/path/to/Open-LLM-VTuber ./avatar-start.sh
+```
+
+#### 手動手順 (スクリプトを使わない場合)
+
+```bash
+# [1] VOICEVOX (TTS, :50021) — 既存コンテナを再開。初回のみ docker run
+docker start voicevox
+#   初回: docker run -d --name voicevox -p 50021:50021 \
+#           voicevox/voicevox_engine:cpu-arm64-latest
+
+# [2] LM Studio (LLM, :1234) — GUI 操作
+#   LM Studio.app を起動 → 'llama-3.1-swallow-8b-instruct-v0.5' を Load
+#   → Local Server を ON
+
+# [3] OLV (ASR+統合, :12393)
+cd <Open-LLM-VTuber を clone した場所>
+uv run run_server.py
+
+# [4] ブラウザで開く
+open http://localhost:12393
+```
+
+#### 停止
+
+- **OLV** — `avatar-start.sh` (または `run_server.py`) を動かしている端末で `Ctrl-C`
+- **VOICEVOX** — `docker stop voicevox`
+- **LM Studio** — アプリ側で Local Server を OFF / アプリ終了
+
+> OLV は v1.2.1 に pin している ([Phase 6 で踏まないリスト](#phase-6-で踏まないリスト-phase-5-から継承--副次発見))。
+> `avatar-start.sh` は `git pull` を一切行わない。
+
 ### Phase 6 で扱うもの (元 Phase 5 scope 外 + D4 結果)
 
 | 項目 | 由来 |
@@ -76,7 +136,7 @@ LLM 出力の表情タグ (`[neutral]` `[joy]` `[sad]` 等) を Live2D の表情
 
 | 順 | タスク | 推定 | 依存 |
 |---|---|---|---|
-| 0 | **事前ベースライン (A2 + D5)**: `verify-persona-matrix.py` (verify-persona.py の prompt 多様化版) を構築し、persona V1 vs V2 を 5 prompt × 5 trial で測定。**Phase 6 D4 実装前のベースライン値** + persona V2 効果定量を兼ねる。詳細計画は [../phase4b-llm-stream-chunker/README.md#次回検証計画--verify-personapy-多様化版-a2--d5](../phase4b-llm-stream-chunker/README.md#次回検証計画--verify-personapy-多様化版-a2--d5) | 1-1.5 時間 | (着手判断後すぐ) |
+| 0 ✅ | **事前ベースライン (A2 + D5)** 完了 (2026-04-30): `verify-persona-matrix.py` で V1/V2 × 5 prompt × 5 trial = 50 call 実行。**A2 完全実証** (「あんまり詳しくない」 出現率 V1 36% → V2 0%) + **D4 ベースライン** (V2 3 文超過率 12%) 取得。詳細結果は [./baseline.md](./baseline.md) | 1-1.5 時間 | (着手判断後すぐ) |
 | 1 | D6-D8 確定 + 本 README に「Phase 6 決断 (確定)」 節を追記 | 30 分 | research 再読 |
 | 2 | **D4 実装 (δ)**: OLV `basic_memory_agent.chat_with_memory` に N 文 cap 機構 | 2-3 時間 | D4 evaluation 結果 |
 | 3 | **D4 実装 (ε)**: persona prompt V3 (「3 文以内厳禁」 強調) | 30 分 | 2 |

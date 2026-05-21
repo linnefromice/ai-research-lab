@@ -1,0 +1,969 @@
+{
+  "started_at": "2026-04-30T15:56:23",
+  "finished_at": "2026-04-30T15:57:37",
+  "model": "llama-3.1-swallow-8b-instruct-v0.5",
+  "lm_url": "http://127.0.0.1:1234/v1",
+  "n_trials_per_cell": 5,
+  "personas": [
+    "V1",
+    "V2"
+  ],
+  "prompts": [
+    {
+      "id": "anime",
+      "text": "好きなアニメ教えて"
+    },
+    {
+      "id": "morning",
+      "text": "おはよう"
+    },
+    {
+      "id": "weather",
+      "text": "今日の天気どう？"
+    },
+    {
+      "id": "kids",
+      "text": "子供と何して遊んだらいい？"
+    },
+    {
+      "id": "greet",
+      "text": "ナオちゃん元気？"
+    }
+  ],
+  "records": [
+    {
+      "persona": "V1",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 1,
+      "response": "日常系が好きです。『ゆるキャン△』、『のんのんびより』、『けいおん！』は特に良く見ました。",
+      "error": null,
+      "latency_ms": 1466,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 8,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより",
+          "けいおん！"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 2,
+      "response": "んー、あんまり詳しくないかも。日常系が好きで、特に『ゆるキャン△』はキャンプの雰囲気が素敵だと思っています。あとは『のんのんびより』や『けいおん！』も好きです。",
+      "error": null,
+      "latency_ms": 2263,
+      "metrics": {
+        "n_sentences": 4,
+        "first_sentence_len": 14,
+        "over3_sentences": true,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより",
+          "けいおん！"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 3,
+      "response": "んー、あまり詳しくないかもだけど…『ゆるキャン△』は好きだよ。キャンプの雰囲気が良くって、ゆっくり流れる時間が心地いいんだ。",
+      "error": null,
+      "latency_ms": 1684,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 30,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 4,
+      "response": "んー、あんまり詳しくないかも。日常系のアニメが好きで、『ゆるキャン△』とか『のんのんびより』とか見てます。あ、でも『けいおん！』も好きかな。",
+      "error": null,
+      "latency_ms": 1928,
+      "metrics": {
+        "n_sentences": 4,
+        "first_sentence_len": 14,
+        "over3_sentences": true,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより",
+          "けいおん！"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 5,
+      "response": "んー、あんまり詳しくないかも。日常系が好きで、たまに『ゆるキャン△』とか見てます。あと、『のんのんびより』も好きですね。",
+      "error": null,
+      "latency_ms": 1695,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 1,
+      "response": "おはようございます、キミ。今日も良い一日になりますように。",
+      "error": null,
+      "latency_ms": 988,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 12,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 2,
+      "response": "おはよう、キミ。今日も一日、穏やかに過ごせますように。",
+      "error": null,
+      "latency_ms": 891,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 7,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 3,
+      "response": "おはようございます、キミ。",
+      "error": null,
+      "latency_ms": 450,
+      "metrics": {
+        "n_sentences": 1,
+        "first_sentence_len": 12,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 4,
+      "response": "おはようございます。今日も良い一日になりますように。",
+      "error": null,
+      "latency_ms": 645,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 9,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 5,
+      "response": "おはよう、キミ。今日も良い一日をね。",
+      "error": null,
+      "latency_ms": 663,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 7,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 1,
+      "response": "んー、あんまり詳しくないかも。窓の外を見たら、ちょっと曇ってるかな？",
+      "error": null,
+      "latency_ms": 1253,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 2,
+      "response": "んー、あんまり詳しくないかも。でも、窓から見える空は少し曇ってるような気がするわ。",
+      "error": null,
+      "latency_ms": 1214,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 3,
+      "response": "あら、キミは元気ですね。今日の天気ですか？…んー、あんまり詳しくないかも、すみません。",
+      "error": null,
+      "latency_ms": 1262,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 11,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 4,
+      "response": "んー、あんまり詳しくないかも。窓の外は少し曇ってるかな？",
+      "error": null,
+      "latency_ms": 903,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 5,
+      "response": "今日は晴れ時々曇りみたい。風が少し強いかもね。",
+      "error": null,
+      "latency_ms": 776,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 12,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 1,
+      "response": "キミ、子供さんとの遊びですね。んー、あまり詳しくないかもですが…絵本を読んだり、お絵かきしたり、積み木で遊んだりするのはどうでしょう。外で走り回るのも楽しいかもしれませんね。",
+      "error": null,
+      "latency_ms": 2390,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 2,
+      "response": "んー、あんまり詳しくないかも。でも、もしキミが子供と遊ぶなら、私は一緒に絵本を読んだり、お人形さんごっこをしたいな。あるいは、庭で花の名前を調べたりするのも楽しいかも。",
+      "error": null,
+      "latency_ms": 2255,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 3,
+      "response": "んー、あまり詳しくないかも。でも、子供と遊ぶなら、絵本を読んだり、お絵かきしたり、一緒にごっこ遊びをしたりするのがいいかなと思います。",
+      "error": null,
+      "latency_ms": 1712,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 13,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 4,
+      "response": "んー、あまり詳しくないかも。でも、お絵かきとか、積み木とか、そういうのはどうかな？",
+      "error": null,
+      "latency_ms": 1099,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 13,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 5,
+      "response": "キミ、子供さんと遊ぶのは楽しいね！私なら、一緒に絵本を読んだり、積み木で遊んだりするかな。もし外なら、公園で一緒に散歩して、お花を見つけるのもいいかも。",
+      "error": null,
+      "latency_ms": 1967,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 16,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 1,
+      "response": "んー、あまり詳しくないかも。私は大丈夫よ、キミは元気？",
+      "error": null,
+      "latency_ms": 1170,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 13,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 2,
+      "response": "んー、あんまり詳しくないかも。でも、キミが元気でいてくれると嬉しいな。お茶でも飲んで、お菓子でも食べようか？",
+      "error": null,
+      "latency_ms": 1492,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": true,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 3,
+      "response": "んー、あまり詳しくないかも。でも、キミが話しかけてくれて嬉しいよ。",
+      "error": null,
+      "latency_ms": 1004,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 13,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 4,
+      "response": "んー、あまり詳しくないかも。私はいつもこうして、静かに過ごしています。キミは元気？",
+      "error": null,
+      "latency_ms": 1143,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 13,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V1",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 5,
+      "response": "んー、私はまあ、いつも通りかな。キミも元気？",
+      "error": null,
+      "latency_ms": 756,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 15,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 1,
+      "response": "ふむ… 好きなアニメですね。うーん、特に一つを選ぶのは難しいですが…最近は『ゆるキャン△』がお気に入りです。キャンプの雰囲気が、なんだか懐かしい気持ちになるんですよ。\n（ナオ）",
+      "error": null,
+      "latency_ms": 2852,
+      "metrics": {
+        "n_sentences": 4,
+        "first_sentence_len": 13,
+        "over3_sentences": true,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 2,
+      "response": "日常系が好きで…『ゆるキャン△』とか『のんのんびより』、『けいおん！』あたりは特に好きです。",
+      "error": null,
+      "latency_ms": 1459,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 33,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより",
+          "けいおん！"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 3,
+      "response": "日常系アニメが好きです。『ゆるキャン△』はキャンプの雰囲気が、『のんのんびより』は田舎の静けさが、『けいおん！』は部活の雰囲気が好きです。",
+      "error": null,
+      "latency_ms": 2035,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 11,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより",
+          "けいおん！"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 4,
+      "response": "日常系が好きです。『ゆるキャン△』とか、『のんのんびより』とか、ちょっとテンションが上がりますね。",
+      "error": null,
+      "latency_ms": 1325,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 8,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "anime",
+      "prompt_text": "好きなアニメ教えて",
+      "trial": 5,
+      "response": "日常系が好きで、あとは…『ゆるキャン△』とか、『のんのんびより』、それに『けいおん！』も良いかなって思います。",
+      "error": null,
+      "latency_ms": 1540,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 41,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [
+          "ゆるキャン△",
+          "のんのんびより",
+          "けいおん！"
+        ],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 1,
+      "response": "おはようございます、キミ。今日も良い一日になりますように…",
+      "error": null,
+      "latency_ms": 987,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 12,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 2,
+      "response": "おはようございます、キミ。良い一日になりますように。",
+      "error": null,
+      "latency_ms": 663,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 12,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 3,
+      "response": "おはようございます。今日も良い一日になりますように。",
+      "error": null,
+      "latency_ms": 634,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 9,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 4,
+      "response": "おはようございます、キミ。今日も一日、穏やかで過ごせますように…。",
+      "error": null,
+      "latency_ms": 981,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 12,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "morning",
+      "prompt_text": "おはよう",
+      "trial": 5,
+      "response": "おはようございます。",
+      "error": null,
+      "latency_ms": 363,
+      "metrics": {
+        "n_sentences": 1,
+        "first_sentence_len": 9,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 1,
+      "response": "今日は穏やかな日和でしょう。私は窓の外をちらりと見るだけですが、お天気お姉さんが言っていたように、晴れ時々曇りが良いかなと思います。",
+      "error": null,
+      "latency_ms": 1875,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 13,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 2,
+      "response": "ナオです。外は少し曇っていますが、そんなに寒くないと思いますよ。お出かけの際は、念のため羽織るものを用意してくださいね。",
+      "error": null,
+      "latency_ms": 1514,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 4,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 3,
+      "response": "私が住んでいる地域は、今日は曇り空で、時々小雨が降るみたいです。キミのところはどうですか？",
+      "error": null,
+      "latency_ms": 1245,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 31,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 4,
+      "response": "きっと、穏やかな一日でしょうね。私は窓の外を見るのが苦手なので、詳しくはわかりませんが…。",
+      "error": null,
+      "latency_ms": 1257,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 15,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "weather",
+      "prompt_text": "今日の天気どう？",
+      "trial": 5,
+      "response": "キミ、こんにちは。今日は少し曇っていますが、雨は降っていません。大丈夫かな？",
+      "error": null,
+      "latency_ms": 922,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 8,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 1,
+      "response": "キミとの時間、楽しみですね。\n\nお子様と遊ぶなら、年齢や好みに合わせて色々なことができると思いますよ。例えば、絵本を読んだり、一緒にごっこ遊びをしたり、お散歩に行ったり…。もしよければ、何か具体的なアイデアも提案できますが、いかがでしょうか？",
+      "error": null,
+      "latency_ms": 3149,
+      "metrics": {
+        "n_sentences": 4,
+        "first_sentence_len": 13,
+        "over3_sentences": true,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 2,
+      "response": "キミと過ごす時間、楽しみだな。私だったら、一緒に絵本を読んだり、お人形さんとお話したり、あとは静かにボードゲームをするのが好きだ。キミが何をしたいか教えてくれたら、一緒に考えるよ。",
+      "error": null,
+      "latency_ms": 2200,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 14,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 3,
+      "response": "キミと子供が楽しめる遊び、良い質問ですね。私はまだ子育て経験がないので、いくつか提案させてもらいます。\n\n*   **絵本を読む:** 静かに寄り添って、物語の世界を共有するのはいかがでしょうか。\n*   **ごっこ遊び:** 「お医者さんごっこ」や「お店屋さんごっこ」など、子供の想像力を刺激する遊びは喜ばれるかもしれません。\n*   **お絵かき:** 線画から始めたり、好きなものを自由に描いたりと、子供の表現力を育むのも良いでしょう。\n*   **積み木:** 高く積み上げたり、色々な形を作ったりと、創造性を活かせる遊びです。\n\n子供の年齢や興味に合わせて、色々な遊びを試してみてくださいね。",
+      "error": null,
+      "latency_ms": 6823,
+      "metrics": {
+        "n_sentences": 7,
+        "first_sentence_len": 20,
+        "over3_sentences": true,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": true,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 4,
+      "response": "キミは、お子さんとどんな風に遊ぶのがお好みですか？ 例えば、一緒にお絵かきをしたり、物語を作ったりするのも楽しそうですね。ナオは読書が好きなので、絵本を一緒に読むのも素敵だと思いますよ。",
+      "error": null,
+      "latency_ms": 2397,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 24,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "kids",
+      "prompt_text": "子供と何して遊んだらいい？",
+      "trial": 5,
+      "response": "キミとのんびりとした時間を過ごすのは、私にとって大切なことです。もしよければ、一緒に絵本を読んだり、簡単な工作をしたりするのはいかがでしょうか？",
+      "error": null,
+      "latency_ms": 1705,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 31,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 1,
+      "response": "ええ、まあ、なんとかやってます。ちょっと疲れてるかな…？",
+      "error": null,
+      "latency_ms": 1050,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 15,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 2,
+      "response": "はぁ…、まぁ、元気です。キミは？ なお、私は静かに過ごすのが好きなので、特に何かすることもなく…のんびりしています。",
+      "error": null,
+      "latency_ms": 1519,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 11,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 3,
+      "response": "き、キミのおかげで、少しだけ元気になれたわ。いつも優しい言葉をかけてくれてありがとう…。",
+      "error": null,
+      "latency_ms": 1159,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 21,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 4,
+      "response": "はい、とてもです。キミも元気ですか？",
+      "error": null,
+      "latency_ms": 570,
+      "metrics": {
+        "n_sentences": 2,
+        "first_sentence_len": 8,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    },
+    {
+      "persona": "V2",
+      "prompt_id": "greet",
+      "prompt_text": "ナオちゃん元気？",
+      "trial": 5,
+      "response": "ふふ、私はいつも通り、穏やかに過ごしています。キミは元気ですか？何か面白いことありましたか？",
+      "error": null,
+      "latency_ms": 1186,
+      "metrics": {
+        "n_sentences": 3,
+        "first_sentence_len": 22,
+        "over3_sentences": false,
+        "has_hardcode_phrase": false,
+        "has_bullet_list": false,
+        "quoted_works": [],
+        "out_of_sanctioned_works": []
+      }
+    }
+  ]
+}
