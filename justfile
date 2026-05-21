@@ -1,0 +1,27 @@
+# ai-research-lab — 実験エントリーポイント集約
+# 一覧: `just` または `just --list`   /   要: just (brew install just)
+#
+# 各実験スクリプトは従来どおり各フォルダ配下に置いたまま。この justfile は
+# それをルートから叩くための薄いラッパー。詳細は各実験 README の「実行方法」節。
+
+avatar := 'deep-research/m1-pro-local-llm-for-avatar'
+
+# コマンド一覧を表示
+default:
+    @just --list
+
+# Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
+avatar-start:
+    cd {{avatar}} && ./avatar-start.sh
+
+# VOICEVOX TTS 初音 latency ベンチ (env: SPEAKER_ID / TEXT / TRIALS)
+tts-bench-voicevox:
+    cd {{avatar}}/phase4b-tts-bench && ./bench-voicevox.sh
+
+# AivisSpeech TTS 初音 latency ベンチ (env: SPEAKER_ID / TEXT / TRIALS)
+tts-bench-aivisspeech:
+    cd {{avatar}}/phase4b-tts-bench && ./bench-aivisspeech.sh
+
+# persona V1/V2 マトリクス検証 (例: just persona-verify --smoke)
+persona-verify *args:
+    cd {{avatar}}/phase4b-llm-stream-chunker && python verify-persona-matrix.py {{args}}

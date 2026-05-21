@@ -57,6 +57,7 @@ dev clone は通常 `../ai-research-pipeline` に隣接する想定。Claude/AI 
 ai-research-lab/
 ├── README.md                  # このファイル
 ├── CLAUDE.md                  # Claude/AI 向け作業方針
+├── justfile                   # ルートから実験を叩くエントリーポイント集約
 ├── .claude/
 │   └── rules/
 │       ├── lab-workflow.md         # lab 固有の軽量ルール
@@ -74,6 +75,23 @@ ai-research-lab/
 
 「育って独立した PoC」になったものは、`daily-report/` / `deep-research/` から
 トップレベルに昇格させて構わない (例: `apps/some-cool-poc/`)。
+
+## 実験を動かす (just)
+
+各実験の実行スクリプトは各フォルダ配下に置いたままだが、ルートの `justfile` から
+まとめて叩ける。スクリプト本体は移動せず、`justfile` は薄いラッパーにすぎない
+(詳細な実行方法は各実験 README の「実行方法」節が SoT)。
+
+```bash
+just              # コマンド一覧を表示
+just avatar-start # 例: Live2D アバターを起動
+```
+
+`just` 未インストールなら `brew install just`。新しい実験を追加したら `justfile` に
+レシピを 1 ブロック足す。実験を捨てたら該当ブロックを消すだけ。
+
+> 注: 現状の実験スクリプトは macOS (M1 Pro) 前提。`just` 自体は Windows 対応だが、
+> 呼び出し先スクリプトが `open` / `docker` arm64 イメージ等に依存するため実環境は macOS。
 
 ## 検証フロー (概略)
 
