@@ -36,6 +36,8 @@ github-issue-agent-orchestration/
 ├── CLAUDE.md                     /loop 実行時に読まれるルール
 ├── docs/
 │   └── issue-protocol.md         規約の単一ソース (type/status/claim)
+├── scripts/
+│   └── setup-issue-labels.sh     TARGET_REPO にラベル 16 種を作成 (冪等)
 └── .claude/
     ├── skills/issue-*/           issue 操作スキル群 (共通コア)
     └── commands/orchestrate-once.md  1 周分を実行するスラッシュコマンド
@@ -50,16 +52,19 @@ cd deep-research/github-issue-agent-orchestration
 cp .env.example .env
 $EDITOR .env            # TARGET_REPO ほか (.env.example のコメント参照) を埋める
 
-# 2. このディレクトリで claude を起動し、単発で 1 周を確認
+# 2. TARGET_REPO に issue 運用ラベル 16 種を作成 (冪等・再実行可)
+./scripts/setup-issue-labels.sh
+
+# 3. このディレクトリで claude を起動し、単発で 1 周を確認
 claude
 > /orchestrate-once
 
-# 3. 周期実行 (claude /loop)
+# 4. 周期実行 (claude /loop)
 > /loop 10m /orchestrate-once
 ```
 
-前提: `gh` が認証済み (`gh auth status`)、`TARGET_REPO` に
-`docs/issue-protocol.md` のラベル群が作成済みであること（GitHub 側の準備はユーザー作業）。
+前提: `gh` が認証済み (`gh auth status`)。ラベルは手順 2 のスクリプトが作成する。
+issue テンプレ・リポ作成等それ以外の GitHub 側準備はユーザー作業。
 
 ## 結果メモ
 
