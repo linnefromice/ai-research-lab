@@ -7,20 +7,28 @@ GitHub Issue オーケストレーションを 1 周実行する。`/loop 10m /o
 
 ## 前提
 
-1. [docs/issue-protocol.md](../../docs/issue-protocol.md) を読む（規約の正本）。
-2. `.env` を読む: `set -a; . ./.env; set +a`（`TARGET_REPO` / `MAX_ISSUES_PER_RUN`）。
-   `TARGET_REPO` が空なら「.env 未設定」と報告して終了する。
+1. [docs/issue-protocol.md](../../docs/issue-protocol.md) を読む（規約の正本。特に
+   §9 実行上の約束）。
+2. 認証と接続を確認する。**env var は Bash 呼び出し間で永続しないため、`.env` の
+   source は `gh` を使う各ブロックの先頭で毎回行う**:
+   ```bash
+   gh auth status || { echo "gh 未認証"; exit 1; }
+   set -a; . ./.env; set +a
+   [ -n "$TARGET_REPO" ] || { echo ".env: TARGET_REPO 未設定"; exit 1; }
+   ```
 
 ## 手順
 
 ### 1. 整合性チェック
 
 ```bash
+set -a; . ./.env; set +a
 gh issue list --repo "$TARGET_REPO" --state open --json number,labels --limit 100
 ```
 
 各 open issue の `status:` ラベル個数を検査する。0 個 / 2 個以上の issue があれば
-**警告として報告**する（protocol §4 違反）。処理自体は続行してよい。
+**警告として報告**する（protocol §4 違反）。是正は protocol §4 の手順（より進んだ
+status を残す）を参照。処理自体は続行してよい。
 
 ### 2. 対象を 1 件拾う
 
@@ -32,6 +40,7 @@ gh issue list --repo "$TARGET_REPO" --state open --json number,labels --limit 10
 3. `type:request` + `status:ready` — [1]（triage 済み）
 
 ```bash
+set -a; . ./.env; set +a
 gh issue list --repo "$TARGET_REPO" --state open \
   --label "type:design" --label "status:ready" --label "agent:claude" \
   --json number,title,labels --limit 20

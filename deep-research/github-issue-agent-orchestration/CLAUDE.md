@@ -23,11 +23,20 @@
     `breakdown-design` — [2]→[3] 起票 / `implement-issue` — [3] 実装 + PR
 - 入口は `/orchestrate-once`（1 周実行）。周期実行は `/loop 10m /orchestrate-once`。
 
-## 接続設定
+## 接続設定と実行上の約束 (重要)
 
 - `.env` の `TARGET_REPO` (owner/repo) が操作対象。`gh` コマンドは常に
   `--repo "$TARGET_REPO"` を付ける。
-- `.env` 読み込み: `set -a; . ./.env; set +a`。
+- **環境変数は Bash 呼び出し間で永続しない**（Claude Code の Bash ツールは呼び出し
+  ごとに別プロセス）。`$TARGET_REPO` 等を使う bash ブロックは、**そのブロックの先頭で
+  必ず `.env` を source する**:
+  ```bash
+  set -a; . ./.env; set +a
+  gh issue ... --repo "$TARGET_REPO"
+  ```
+- **CWD はプロジェクトルートに保つ**（CWD は Bash 呼び出し間で永続する）。永続的な
+  `cd` は禁止 — 別ディレクトリでの作業は `git -C <path>` やサブシェル
+  `( cd <path>; ... )` を使う。これで `. ./.env` の相対パスが常に有効になる。
 - `gh` / `claude` の認証は環境側 ambient。**`.env` に API key / token を書かない**
   （このリポは public）。
 

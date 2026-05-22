@@ -10,6 +10,10 @@ Claude / Codex で回す構成の、**ローカル側プロジェクト**。
 - 先行研究: `../../../ai-research-pipeline/features/deep-research/reports/hermes-agent-orchestration.md`
   (基盤・コスト・実行環境比較)
 
+> 起点レポートは親リポ `ai-research-pipeline`（private）内にある。上記は隣接 clone を
+> 前提とした相対パスで、GitHub 上の public 読者は辿れない（lab 全体のパス規約 —
+> ルート [CLAUDE.md](../../CLAUDE.md) 参照）。
+
 ## 目的
 
 GitHub 側（ラベル作成・issue テンプレ・リポ設定）には触れず、それに **触れにいく
@@ -44,7 +48,7 @@ cd deep-research/github-issue-agent-orchestration
 
 # 1. 接続先リポを設定
 cp .env.example .env
-$EDITOR .env            # TARGET_REPO=<owner/repo> を埋める
+$EDITOR .env            # TARGET_REPO ほか (.env.example のコメント参照) を埋める
 
 # 2. このディレクトリで claude を起動し、単発で 1 周を確認
 claude

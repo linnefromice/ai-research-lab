@@ -15,17 +15,29 @@ Step 1 では Claude が代用する。
 入力: claim 済み（`status:in-progress`）の `type:impl` issue `N`。
 
 1. `issue-read` で [3] と親 [2] を把握し、実装指示・完了条件を確定する。
-2. **worktree 隔離**: `TARGET_REPO` のローカル clone で作業ブランチ用 worktree を切る:
+2. **worktree 隔離**: `.env` の `LOCAL_CLONE`（`TARGET_REPO` のローカル clone）から
+   作業用 worktree を切る。env var は永続しないため `.env` の source は同一ブロックで
+   行う（protocol §9）:
    ```bash
-   git -C "<clone>" worktree add "<WORKTREE_BASE>/issue-<N>" -b "impl/issue-<N>"
+   set -a; . ./.env; set +a
+   git -C "$LOCAL_CLONE" worktree add "$WORKTREE_BASE/issue-<N>" -b "impl/issue-<N>"
    ```
    破壊的なコード変更はこの worktree 内に限定する。
-3. issue 本文の指示に従い実装する（`Edit` / `Write`）。
-4. テスト・lint を実行し、green にする。失敗が解消できなければ手順 7 へ。
-5. commit して push し、PR を作成する:
+3. issue 本文の指示に従い worktree 内のファイルを実装する（`Edit` / `Write`）。
+4. テスト・lint を実行し green にする。**永続 `cd` は禁止**（CWD はプロジェクト
+   ルートに保つ — protocol §9）。worktree 内での実行はサブシェルで:
+   `( cd "<WORKTREE_BASE>/issue-<N>" && <test/lint コマンド> )`。
+   失敗が解消できなければ手順 7 へ。
+5. commit・push・PR 作成。git は `-C`、`gh pr create` はサブシェルで worktree から
+   実行する（`.env` を同一ブロックで source）:
    ```bash
-   gh pr create --repo "$TARGET_REPO" \
-     --title "<title>" --body "Closes #<N>"
+   set -a; . ./.env; set +a
+   wt="$WORKTREE_BASE/issue-<N>"
+   git -C "$wt" add -A
+   git -C "$wt" commit -m "<message>"
+   git -C "$wt" push -u origin "impl/issue-<N>"
+   ( cd "$wt" && gh pr create --repo "$TARGET_REPO" \
+       --head "impl/issue-<N>" --title "<title>" --body "Closes #<N>" )
    ```
 6. [3] を `in-progress`→`review` + `needs-human` に遷移する（`issue-transition`）。
    PR レビュー・マージ（G4）と issue close は人間が行う。

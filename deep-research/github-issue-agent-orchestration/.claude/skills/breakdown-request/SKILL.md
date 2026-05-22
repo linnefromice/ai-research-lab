@@ -17,8 +17,10 @@ description: "[1] request を入力に [2] design issue を起票する ([1]→[
 1. `issue-read` で [1] を構造化把握する。
 2. 要求を「設計工程で扱う単位」に分解する。多くは 1 個。明確に独立した関心事が
    複数あれば複数の [2] に分ける（type は肥大させない — protocol §1）。
-3. 各 [2] を起票する:
+3. 各 [2] を起票する。env var は永続しないため `.env` の source は同一ブロックで
+   行う（protocol §9）:
    ```bash
+   set -a; . ./.env; set +a
    gh issue create --repo "$TARGET_REPO" \
      --title "<design issue title>" \
      --label "type:design" --label "status:triage" --label "agent:claude" \
@@ -34,9 +36,13 @@ description: "[1] request を入力に [2] design issue を起票する ([1]→[
 EOF
 )"
    ```
-4. 起票した [2] の番号を [1] にコメントで記録する。
-5. [1] を close する: `gh issue close <N> --repo "$TARGET_REPO"`
-   （[1] の完了は close で表す — protocol §4）。
+4. 起票した [2] 番号を [1] にコメントで記録し、[1] を close する（[1] の完了は
+   close で表す — protocol §4。[1] の close はエージェントが行う）:
+   ```bash
+   set -a; . ./.env; set +a
+   gh issue comment <N> --repo "$TARGET_REPO" --body "[2] #<起票番号> を起票。この [1] を close。"
+   gh issue close <N> --repo "$TARGET_REPO"
+   ```
 
 ## 注意
 
