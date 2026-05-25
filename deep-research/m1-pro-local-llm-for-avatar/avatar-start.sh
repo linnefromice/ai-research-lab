@@ -11,10 +11,10 @@
 # 起動後、ブラウザで http://localhost:12393 を開くとアバターが表示される。
 #
 # 使い方:
-#   ./avatar-start.sh
-#
-# OLV の clone 先が標準と違う場合は OLV_DIR で上書き:
 #   OLV_DIR=/path/to/Open-LLM-VTuber ./avatar-start.sh
+#
+# OLV の clone 先を OLV_DIR で必ず指定する (環境ごとに異なるためデフォルト値なし)。
+# 初回セットアップは phase5-live2d/olv-patches/README.md 参照。
 #
 # 停止:
 #   OLV     — このスクリプトを動かしている端末で Ctrl-C
@@ -26,7 +26,11 @@
 set -euo pipefail
 
 # ─── 設定 ───
-OLV_DIR="${OLV_DIR:-/Users/linnefromice/repository/github.com/_linnefromice/Open-LLM-VTuber/Open-LLM-VTuber}"
+OLV_DIR="${OLV_DIR:-}"
+if [[ -z "${OLV_DIR}" ]]; then
+  printf '✗ OLV_DIR が未設定です。\n  例: OLV_DIR=/path/to/Open-LLM-VTuber ./avatar-start.sh\n  初回セットアップは phase5-live2d/olv-patches/README.md 参照\n' >&2
+  exit 1
+fi
 VOICEVOX_CONTAINER="voicevox"
 VOICEVOX_PORT=50021
 LMSTUDIO_PORT=1234
