@@ -114,6 +114,7 @@ Phase 4 のうち未完了の B / C を実機で検証する。
 | **WhisperKit `prompt` field upstream issue** | [whisperkit-prompt-bug-repro/](./whisperkit-prompt-bug-repro/) (lab 内) | 再現リポを最小化して `argmaxinc/WhisperKit` に投稿予定 |
 | **system prompt 一人称揺れ / character drift** | Phase 4b の chunker と一緒に fewshot で対処 | Phase 4b 内 |
 | **ai-research-pipeline 側 CI infrastructure 修復** | **lab 外 (pipeline 側で別 PR)** | runner 未割当で 2-3 秒 fail (Uptime Monitor / Deploy / Secret Scan)。GitHub Actions 分数枯渇 or Settings 問題。avatar とは無関係 |
+| **Ollama vs LM Studio backend 再評価** | [ollama-vs-lmstudio-backend.md](./ollama-vs-lmstudio-backend.md) | 2026-05-23 調査 (論点整理のみ、実装なし)。HOLD/条件付き再評価。未解決 3 項目あり |
 
 ## Phase 4a までの主要な発見 (要点抜粋)
 
