@@ -55,7 +55,7 @@ check_file() {
   echo "── ${file}"
 
   # --- frontmatter (title / date) -----------------------------------------
-  local has_fm=0 fm_title=0 fm_date=0
+  local has_fm=0 fm_title=0 fm_date=0 fm_marp=0
   local lineno=0 in_fm=0 fm_seen_open=0
   # 見出し / コードフェンス解析用の状態
   local in_fence=0 fence_marker="" h1_count=0 prev_level=0 fence_open_line=0
@@ -77,6 +77,7 @@ check_file() {
       [[ "$line" =~ ^title： ]] && fm_title=1 || true
       [[ "$line" =~ ^title: ]] && fm_title=1 || true
       [[ "$line" =~ ^date: ]] && fm_date=1 || true
+      [[ "$line" =~ ^marp:[[:space:]]*true ]] && fm_marp=1 || true
       continue
     fi
 
@@ -128,6 +129,10 @@ check_file() {
   if [[ $has_fm -eq 0 ]]; then
     echo "  ${C_WARN}⚠ frontmatter なし (title/date/tags 推奨 §A-1#8)${C_RST}"
     warns=$((warns + 1))
+  elif [[ $fm_marp -eq 1 ]]; then
+    # Marp スライド md は marp/theme/paginate 等が frontmatter。title/date は不要
+    # (表紙スライドの # 見出しがタイトルを兼ねる)。
+    echo "  ${C_OK}✓ Marp スライド md (title/date は不要)${C_RST}"
   else
     if [[ $fm_title -eq 0 ]]; then
       echo "  ${C_ERR}✗ frontmatter に title がない${C_RST}"; errors=$((errors + 1))
