@@ -93,6 +93,11 @@ inprint==0 && bodylh==0 && /line-height:[ ]*[0-9.]+/ {
 /^[ ]*h2[ ]*\{/ && h2sz==0 { if(match($0,/font-size:[ ]*[0-9.]+px/)){ s=substr($0,RSTART,RLENGTH); gsub(/[^0-9.]/,"",s); h2sz=s } }
 /^[ ]*h3[ ]*\{/ && h3sz==0 { if(match($0,/font-size:[ ]*[0-9.]+px/)){ s=substr($0,RSTART,RLENGTH); gsub(/[^0-9.]/,"",s); h3sz=s } }
 /\.container[ ]*\{/ && cmax==0 { if(match($0,/max-width:[ ]*[0-9.]+px/)){ s=substr($0,RSTART,RLENGTH); gsub(/[^0-9.]/,"",s); cmax=s } }
+# 本文の読み幅 (measure) トークン: 散文の行長を判定する基準。screen のみ。rem は ×16
+inprint==0 && measure_px==0 && /--measure:[ ]*[0-9.]+(rem|px)/ {
+  if(match($0,/[0-9.]+(rem|px)/)){ m=substr($0,RSTART,RLENGTH)
+    if(index(m,"rem")>0){ gsub(/[^0-9.]/,"",m); measure_px=m*16 } else { gsub(/[^0-9.]/,"",m); measure_px=m } }
+}
 
 END {
   bodysz = (bodysz>0)?bodysz:16   # body は font-size 未指定なら 16px 既定
@@ -115,10 +120,14 @@ END {
   }
   print ""
   print "## Typography — 可読性"
-  if(cmax>0){
-    cpl = cmax / bodysz   # 1 行のおおよその全角文字数 (JP は ~1em/字)
-    printf "  行長: container %dpx / body %dpx ≒ %d 文字/行", cmax, bodysz, int(cpl)
-    if(cpl>45){ print "  "(("~"))" 広い (JP 快適域 ~30-45。max-width を狭めるか段組み検討)"; warns++ }
+  if(cmax>0 || measure_px>0){
+    readw = (measure_px>0)? measure_px : cmax   # 散文の読み幅 (measure 優先)
+    cpl = readw / bodysz                         # 1 行のおおよその全角文字数 (JP は ~1em/字)
+    if(measure_px>0)
+      printf "  行長: container %dpx(レイアウト) / 本文 measure %dpx / body %dpx ≒ %d 文字/行", cmax, measure_px, bodysz, int(cpl)
+    else
+      printf "  行長: container %dpx / body %dpx ≒ %d 文字/行", cmax, bodysz, int(cpl)
+    if(cpl>45){ print "  ~ 広い (JP 快適域 ~30-45。--measure を狭めるか段組み検討)"; warns++ }
     else print "  OK"
   }
   if(bodylh>0){
