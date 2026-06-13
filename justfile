@@ -6,6 +6,7 @@
 
 avatar := 'deep-research/m1-pro-local-llm-for-avatar'
 readable_md := 'deep-research/readable-md-pipeline/readable-md'
+md_to_html := 'deep-research/readable-md-pipeline/md-to-html'
 
 # コマンド一覧を表示
 default:
@@ -18,6 +19,14 @@ md-check *args:
 # readable-md バンドルを任意プロジェクトへ持ち込む (例: just md-install /path/to/proj)
 md-install *args:
     {{readable_md}}/install.sh {{args}}
+
+# md → テーマ付き HTML を決定論変換 (例: just md-html path/to/x.md ; -o で出力先)
+md-html *args:
+    {{md_to_html}}/scripts/render-html.sh {{args}}
+
+# md-to-html バンドルを任意プロジェクトへ持ち込む (例: just md-html-install /path/to/proj)
+md-html-install *args:
+    {{md_to_html}}/install.sh {{args}}
 
 # Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
 avatar-start:

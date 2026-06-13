@@ -23,7 +23,7 @@
 | Stage | 担当 | 中身 | 状態 |
 |-------|------|------|------|
 | **Stage 1** | 読みやすい md を作る | スキル `readable-md` + markdownlint drift gate + 構造チェッカ + 骨子テンプレ | ✅ **構築済** ([readable-md/](./readable-md/)) |
-| Stage 2 | md → HTML | 親リポ `md-to-html` スキル相当 (共通ダークテーマ / 印刷 A4 / headless PDF) を移植・汎用化 | 余白 (未着手) |
+| **Stage 2** | md → HTML | 共通テーマ HTML (画面ダーク / 印刷 A4)。決定論レンダラ + LLM リッチパスの 2 系統 | ✅ **構築済** ([md-to-html/](./md-to-html/)) |
 | Stage 3 | md → slide | Marp 中心に `slides.md` 生成 + HTML/PDF/PPTX 出力。reveal/Pandoc は選択肢 | 余白 (未着手) |
 
 各 Stage は「1 本通る」ことを確認してから次へ進む。Stage 間は **md = 正** の一点で
@@ -32,13 +32,13 @@
 ```text
 [ research.md ]  ← 唯一の正 (Source of Truth)
       |
-      | Stage 1: readable-md (執筆/整形 + drift gate)
+      | Stage 1: readable-md (執筆/整形 + drift gate)        ✅
       v
 [ 読みやすい md ] --(機械検証 OK)-->
       |
-      +--- Stage 2: md → report.html / report.pdf
+      +--- Stage 2: md → report.html / report.pdf           ✅
       |
-      +--- Stage 3: md → slides.html / slides.pdf / slides.pptx
+      +--- Stage 3: md → slides.html / slides.pdf / slides.pptx   (未着手)
 ```
 
 ## いま動くもの (Stage 1)
