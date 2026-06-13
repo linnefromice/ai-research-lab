@@ -43,22 +43,32 @@
 
 3 Stage すべて構築済。md 1 本がレポート (HTML/PDF) と発表資料 (slide) へ同時に昇華する。
 
-## いま動くもの (Stage 1)
+## 任意プロジェクトへ一括導入 (統合インストーラ)
+
+3 Stage をまとめて持ち込むなら、親 `install.sh` を使う:
 
 ```bash
-cd readable-md
-
-# 構造チェック (node 不要)
-./scripts/check-readable-md.sh <your.md>
-
-# markdownlint も併せて
-./scripts/check-readable-md.sh --lint <your.md>
-
-# 任意プロジェクトへ持ち込む
+# 全 Stage を入れる
 ./install.sh /path/to/target-project
+
+# 何が入るか確認 (dry-run)
+./install.sh --dry-run /path/to/target-project
+
+# Stage を選んで入れる (1=readable-md 2=html 3=slide)
+./install.sh --only 1,2 /path/to/target-project
 ```
 
-詳細は [readable-md/README.md](./readable-md/README.md)。
+導入後、target 側で次が使える:
+
+```bash
+tools/readable-md/check-readable-md.sh <your.md>   # 1) 構造チェック (node 不要)
+tools/md-to-html/render-html.sh <your.md>          # 2) md → HTML
+tools/md-to-slide/build-slides.sh <slides.md>      # 3) slides.md → HTML/PDF/PPTX
+# Claude スキル: /readable-md  /md-to-html  /md-to-slide
+```
+
+個別に入れたい場合は各 Stage の `install.sh` を直接使う
+([readable-md](./readable-md/) / [md-to-html](./md-to-html/) / [md-to-slide](./md-to-slide/))。
 
 ## 設計方針
 
@@ -71,6 +81,10 @@ cd readable-md
 
 ## 結果メモ
 
-- Stage 1 を構築し、自前テンプレ + 親リポレポートでチェッカ / markdownlint を検証済み。
-- 次の余白: Stage 2 (md→HTML 汎用化) と Stage 3 (Marp slide)。レポート §F-3 の
-  「md push → lint → report HTML/PDF + slide HTML/PDF/PPTX → 配布」CI を最終形に置く。
+- 3 Stage + 統合インストーラを構築し、各 Stage を実物で検証済み（親リポ 481 行レポートの
+  HTML 化、フルパイプラインで 10 枚スライド生成、fresh プロジェクトへ install → check →
+  render → build の通し）。
+- ドッグフーディングで実バグを修正: Stage 1 checker が Marp slide md の frontmatter を
+  誤検知 → `marp:true` 検出で slide md と認識。
+- 残りの余白: レポート §F-3 の「md push → lint → report HTML/PDF + slide HTML/PDF/PPTX →
+  配布」を `.github/workflows/` に実体化する CI テンプレ。

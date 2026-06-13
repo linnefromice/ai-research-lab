@@ -8,6 +8,7 @@ avatar := 'deep-research/m1-pro-local-llm-for-avatar'
 readable_md := 'deep-research/readable-md-pipeline/readable-md'
 md_to_html := 'deep-research/readable-md-pipeline/md-to-html'
 md_to_slide := 'deep-research/readable-md-pipeline/md-to-slide'
+md_pipeline := 'deep-research/readable-md-pipeline'
 
 # コマンド一覧を表示
 default:
@@ -36,6 +37,10 @@ slides-build *args:
 # md-to-slide バンドルを任意プロジェクトへ持ち込む (例: just slides-install /path/to/proj)
 slides-install *args:
     {{md_to_slide}}/install.sh {{args}}
+
+# パイプライン 3 Stage を任意プロジェクトへ一括導入 (例: just pipeline-install /path/to/proj)
+pipeline-install *args:
+    {{md_pipeline}}/install.sh {{args}}
 
 # Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
 avatar-start:
