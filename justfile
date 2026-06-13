@@ -9,6 +9,7 @@ readable_md := 'deep-research/readable-md-pipeline/readable-md'
 md_to_html := 'deep-research/readable-md-pipeline/md-to-html'
 md_to_slide := 'deep-research/readable-md-pipeline/md-to-slide'
 md_pipeline := 'deep-research/readable-md-pipeline'
+md_review := 'deep-research/readable-md-pipeline/review'
 
 # コマンド一覧を表示
 default:
@@ -41,6 +42,10 @@ slides-install *args:
 # パイプライン 3 Stage を任意プロジェクトへ一括導入 (例: just pipeline-install /path/to/proj)
 pipeline-install *args:
     {{md_pipeline}}/install.sh {{args}}
+
+# 生成 HTML の見た目を C.R.A.P. デザイン監査 (例: just design-audit path/to/x.html)
+design-audit *args:
+    {{md_review}}/scripts/design-audit.sh {{args}}
 
 # Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
 avatar-start:

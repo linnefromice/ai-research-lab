@@ -8,14 +8,15 @@
 # 使い方:
 #   ./install.sh <target-project-dir>            # 全 Stage を入れる
 #   ./install.sh --dry-run <target-dir>          # 何が入るか表示のみ
-#   ./install.sh --only 1,2 <target-dir>         # Stage を選んで入れる (1=readable-md 2=html 3=slide)
+#   ./install.sh --only 1,2 <target-dir>         # 選んで入れる (1=readable-md 2=html 3=slide r=review)
 #
 # 入るもの (target 配下):
-#   .claude/skills/{readable-md,md-to-html,md-to-slide}/SKILL.md
+#   .claude/skills/{readable-md,md-to-html,md-to-slide,design-review}/SKILL.md
 #   .markdownlint.jsonc                          (既存なら skip)
 #   tools/readable-md/{check-readable-md.sh,research-skeleton.md}
 #   tools/md-to-html/{render-html.sh,report-theme-head.html}
 #   tools/md-to-slide/{build-slides.sh,slides-marp.md}
+#   tools/review/design-audit.sh
 #
 set -euo pipefail
 
@@ -50,6 +51,7 @@ STAGES=(
   "1:readable-md:Stage 1 (読みやすい md を作る)"
   "2:md-to-html:Stage 2 (md → HTML)"
   "3:md-to-slide:Stage 3 (md → slide)"
+  "r:review:Review (見た目のデザイン品質監査)"
 )
 
 # --only が指定されたら、そのキーだけ通す判定関数
@@ -106,4 +108,5 @@ echo "  cd ${TARGET}"
 echo "  tools/readable-md/check-readable-md.sh <your.md>    # 1) 構造チェック"
 echo "  tools/md-to-html/render-html.sh <your.md>           # 2) md → HTML"
 echo "  tools/md-to-slide/build-slides.sh <slides.md>       # 3) slides.md → HTML"
-echo "  Claude: /readable-md /md-to-html /md-to-slide       # 各 Stage のスキル"
+echo "  tools/review/design-audit.sh <generated.html>       # r) 見た目のデザイン監査"
+echo "  Claude: /readable-md /md-to-html /md-to-slide /design-review"
