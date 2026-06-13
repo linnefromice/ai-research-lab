@@ -38,6 +38,11 @@ FAIL/WARN を起点にする。コントラスト AA 未満は最優先で直す
 
 ### 2. レンダリング結果を見る (Alignment / Proximity)
 
+> 補足: Alignment/Proximity は本質的に「目でしか測れない」わけではない。**レンダリングして
+> 要素の座標を測れば決定論で数値化できる** (左端 X のクラスタ数 / ギャップ比)。これは
+> [DESIGN-CEILING.md](../../DESIGN-CEILING.md) の Lv2 (geometry-audit) の領分。本スキルの目視は
+> その自動監査が無いときの fallback。
+
 - **スクリーンショットが撮れる環境** (chromium 等) があれば、HTML をレンダリングして
   画像を Read し、整列・近接・視覚的リズムを評価する。
 - 無い環境では、**HTML 構造 + theme トークンから推論**する (ピクセルは見えないが、
