@@ -24,7 +24,7 @@
 |-------|------|------|------|
 | **Stage 1** | 読みやすい md を作る | スキル `readable-md` + markdownlint drift gate + 構造チェッカ + 骨子テンプレ | ✅ **構築済** ([readable-md/](./readable-md/)) |
 | **Stage 2** | md → HTML | 共通テーマ HTML (画面ダーク / 印刷 A4)。決定論レンダラ + LLM リッチパスの 2 系統 | ✅ **構築済** ([md-to-html/](./md-to-html/)) |
-| Stage 3 | md → slide | Marp 中心に `slides.md` 生成 + HTML/PDF/PPTX 出力。reveal/Pandoc は選択肢 | 余白 (未着手) |
+| **Stage 3** | md → slide | Marp で `slides.md` 生成 + HTML/PDF/PPTX。authoring(LLM) + build(決定論)の 2 段 | ✅ **構築済** ([md-to-slide/](./md-to-slide/)) |
 
 各 Stage は「1 本通る」ことを確認してから次へ進む。Stage 間は **md = 正** の一点で
 繋がっており、内容修正は常に md 側でのみ行う。
@@ -38,8 +38,10 @@
       |
       +--- Stage 2: md → report.html / report.pdf           ✅
       |
-      +--- Stage 3: md → slides.html / slides.pdf / slides.pptx   (未着手)
+      +--- Stage 3: md → slides.html / slides.pdf / slides.pptx   ✅
 ```
+
+3 Stage すべて構築済。md 1 本がレポート (HTML/PDF) と発表資料 (slide) へ同時に昇華する。
 
 ## いま動くもの (Stage 1)
 

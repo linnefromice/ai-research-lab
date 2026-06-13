@@ -7,6 +7,7 @@
 avatar := 'deep-research/m1-pro-local-llm-for-avatar'
 readable_md := 'deep-research/readable-md-pipeline/readable-md'
 md_to_html := 'deep-research/readable-md-pipeline/md-to-html'
+md_to_slide := 'deep-research/readable-md-pipeline/md-to-slide'
 
 # コマンド一覧を表示
 default:
@@ -27,6 +28,14 @@ md-html *args:
 # md-to-html バンドルを任意プロジェクトへ持ち込む (例: just md-html-install /path/to/proj)
 md-html-install *args:
     {{md_to_html}}/install.sh {{args}}
+
+# Marp slides.md を HTML/PDF/PPTX にビルド (例: just slides-build x.slides.md --all)
+slides-build *args:
+    {{md_to_slide}}/scripts/build-slides.sh {{args}}
+
+# md-to-slide バンドルを任意プロジェクトへ持ち込む (例: just slides-install /path/to/proj)
+slides-install *args:
+    {{md_to_slide}}/install.sh {{args}}
 
 # Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
 avatar-start:
