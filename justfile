@@ -5,10 +5,19 @@
 # それをルートから叩くための薄いラッパー。詳細は各実験 README の「実行方法」節。
 
 avatar := 'deep-research/m1-pro-local-llm-for-avatar'
+readable_md := 'deep-research/readable-md-pipeline/readable-md'
 
 # コマンド一覧を表示
 default:
     @just --list
+
+# 読みやすい md か構造チェック (例: just md-check path/to/x.md ; --lint で markdownlint も)
+md-check *args:
+    {{readable_md}}/scripts/check-readable-md.sh {{args}}
+
+# readable-md バンドルを任意プロジェクトへ持ち込む (例: just md-install /path/to/proj)
+md-install *args:
+    {{readable_md}}/install.sh {{args}}
 
 # Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
 avatar-start:
