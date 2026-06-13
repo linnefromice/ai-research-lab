@@ -22,9 +22,12 @@ md→HTML→slide パイプラインの**生成物 (HTML/スライド) が見た
 ```text
 review/
 ├── README.md                       このファイル
+├── DESIGN-CEILING.md               「コードでどこまで」の全体設計 (梯子 Lv0-4)
 ├── install.sh                      任意プロジェクトへ冪等コピー
-├── scripts/design-audit.sh         C.R.A.P. 機械監査 (コントラスト比/行長/type scale 等)
-└── skill/design-review/SKILL.md    LLM レビュー (整列/近接/視覚的印象を C.R.A.P. で採点)
+├── scripts/
+│   ├── design-audit.sh             [Lv0] C.R.A.P. 機械監査 (コントラスト比/行長/type scale 等)
+│   └── gen-theme.sh                [Lv1] seed → コントラスト保証付き theme を決定論生成
+└── skill/design-review/SKILL.md    [Lv4] LLM レビュー (整列/近接/視覚的印象を C.R.A.P. で採点)
 ```
 
 ## 何を測るか
@@ -51,6 +54,21 @@ review/
 
 コントラスト AA 未満 (本文 < 4.5) が 1 件でもあると終了コード 1 (CI gate)。行長・行間・
 type scale・パレットは WARN (改善余地)。
+
+### theme を生成する (Lv1: seed → 一貫性・コントラスト保証)
+
+```bash
+# seed から theme (<style>) を生成。--out 省略で標準出力 (既存 asset を壊さない)
+./scripts/gen-theme.sh --base 16 --ratio 1.25 --space 8 --hue 245 --out /tmp/theme.html
+
+# 生成物は design-audit を 0 FAIL/0 WARN で通る (生成→監査ループが閉じる)
+./scripts/design-audit.sh --theme /tmp/theme.html
+```
+
+seed (base / ratio / space / hue) から **type scale (base×ratio^n)・8px グリッド・パレット**を
+決定論導出。色は全 fg/bg ペアの WCAG コントラストを計算し **AA 以上を保証**する (明度調整ループ)。
+hue を変えても常に正しい theme が出る ―― 「正しさをコードで保証」の実演。
+md-to-html の単一ソース (`report-theme-head.html`) に `--out` で書き出して使う。
 
 ### LLM レビュー (整列/近接)
 
@@ -84,6 +102,11 @@ Stage 2 も入れておくと `--theme` 省略で動く。
   - 未使用トークン `--orange` を削除 (13→12)。
   - 監査側も `--measure` を読み、レイアウト幅でなく本文読み幅で行長を判定するよう改良。
 - 低コントラストのダミーテーマで FAIL→exit 1、インライン style 検出も確認。
+- **gen-theme.sh (Lv1) で「正しさをコードで保証」を実演**: seed (青 hue=245 / 暖色 25 /
+  緑 140) を変えても、生成 theme は 3 つとも design-audit を 0 FAIL/0 WARN で通過
+  (WCAG AA・modular scale・8px グリッドを構築的に満たす)。accent/bg が 4.90:1 のように
+  閾値直上に調整されるのは、明度調整ループが効いている証拠。色は color-mix で
+  トークン由来に統一 (hue を変えると tag/box も追従)。
 - コントラスト比は hex から WCAG 相対輝度を awk で計算 (node 不要)。
 - 整列/近接の視覚評価はスクショが要る。chromium 無し環境ではマークアップ推論に留め、
   その旨を明記する方針 (skill に記載)。

@@ -12,7 +12,8 @@
 #
 # コピー先 (target 配下):
 #   .claude/skills/design-review/SKILL.md     レビュー スキル
-#   tools/review/design-audit.sh              デザイン監査 (機械)
+#   tools/review/design-audit.sh              デザイン監査 (Lv0)
+#   tools/review/gen-theme.sh                 theme 生成 (Lv1)
 #
 set -euo pipefail
 
@@ -42,6 +43,7 @@ TARGET="$(cd "$TARGET" && pwd)"
 MAPPINGS=(
   "${SRC}/skill/design-review/SKILL.md::${TARGET}/.claude/skills/design-review/SKILL.md::1"
   "${SRC}/scripts/design-audit.sh::${TARGET}/tools/review/design-audit.sh::1"
+  "${SRC}/scripts/gen-theme.sh::${TARGET}/tools/review/gen-theme.sh::1"
 )
 
 copied=0 skipped=0

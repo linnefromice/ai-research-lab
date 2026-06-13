@@ -47,6 +47,10 @@ pipeline-install *args:
 design-audit *args:
     {{md_review}}/scripts/design-audit.sh {{args}}
 
+# seed から theme を生成 (例: just gen-theme --hue 200 --out /tmp/t.html)
+gen-theme *args:
+    {{md_review}}/scripts/gen-theme.sh {{args}}
+
 # Live2D アバター「ナオ」を起動 (VOICEVOX + LM Studio 検知 + OLV)
 avatar-start:
     cd {{avatar}} && ./avatar-start.sh

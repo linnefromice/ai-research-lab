@@ -34,7 +34,7 @@ tags: [design, review, automation, crap]
 | Lv | 測れる/直せること | 必要なもの | 自動修正 | 決定論 | 現状 |
 |----|------------------|-----------|---------|--------|------|
 | **0 静的トークン監査** | コントラスト比・行長・type scale・パレット | なし | 提案のみ | ○ | 構築済 (`design-audit.sh`) |
-| **1 静的デザインシステム強制/生成** | modular scale 準拠・8px グリッド・パレット由来・vertical rhythm | なし | **可 (asset 書換/生成)** | ○ | 未 |
+| **1 静的デザインシステム強制/生成** | modular scale 準拠・8px グリッド・パレット由来・vertical rhythm | なし | **可 (asset 書換/生成)** | ○ | 構築済 (`gen-theme.sh`) |
 | **2 レンダリング幾何** | Alignment/Proximity 数値化・overflow・衝突・print page-fit・レスポンシブ | headless chromium | 一部 | ○ | 未 |
 | **3 ピクセル/知覚** | 視覚バランス(重心)・clutter(乱雑度)・実パレット抽出・色調和 | render + 画像処理 | 一部 | ○ | 未 |
 | **4 学習/taste** | 美的スコア・ブランド適合・C.R.A.P. 定性 | 美的モデル / LLM-vision | 不可 | × | skill 雛形のみ |
@@ -129,7 +129,7 @@ human + 学習の領分。
 
 | 順 | やること | レベル | 依存 | 狙い |
 |----|---------|--------|------|------|
-| 1 | **gen-theme + style lint** | Lv1 | なし | 「正しさをコードで保証」を実演。seed→theme 生成 + グリッド/scale 強制 |
+| 1 | **gen-theme + style lint** | Lv1 | なし | ✅ gen-theme.sh 構築済 (seed→theme 生成・AA 保証)。style lint は余白 |
 | 2 | **geometry-audit** | Lv2 | chromium | A/P を数値化・overflow・print page-fit。C.R.A.P. 完全自動化 |
 | 3 | (任意) pixel-metrics | Lv3 | chromium + ImageMagick | バランス/clutter。逓減気味なので必要時 |
 | 4 | design-review を seed/taste 層に純化 | Lv4 | LLM-vision | 「適切さ」だけを人間/LLM に残す |
