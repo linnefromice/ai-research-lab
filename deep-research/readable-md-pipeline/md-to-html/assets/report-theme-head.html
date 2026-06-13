@@ -147,9 +147,13 @@
   .flow-arrow-down { text-align: center; color: var(--text-sub);
                      font-size: 20px; padding: 6px 0; }
 
-  /* レスポンシブ */
+  /* レスポンシブ (モバイル) — 単一ソースで PC/スマホ両対応 */
   @media (max-width: 768px) {
-    .card-grid { grid-template-columns: 1fr; }
+    .container { padding: 24px 16px 48px; }       /* 余白を詰める */
+    .card-grid { grid-template-columns: 1fr; }     /* カードは 1 列 */
+    h1 { font-size: 24px; }                        /* 見出しを一段下げる */
+    /* 広い表は横スクロール化 (ページ全体の横溢れを防ぐ。GitHub md と同手法) */
+    table { display: block; width: max-content; max-width: 100%; overflow-x: auto; }
   }
 
   /* === 印刷スタイル (PDF 出力用・必須) === */

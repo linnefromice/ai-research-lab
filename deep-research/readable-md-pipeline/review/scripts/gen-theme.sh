@@ -71,6 +71,7 @@ BEGIN{
   print "h3="   rnd(base*ratio)
   print "h2="   rnd(base*(ratio^2))
   print "h1="   rnd(base*(ratio^3))
+  print "h1m="  rnd(base*(ratio^3)*0.82)
   print "small="rnd(base*0.875)
   print "measure=" rnd(38*base)
   print "lh=1.7"; print "container=1100"
@@ -197,7 +198,12 @@ cat <<STYLE_EOF
   .flow-node.highlight-green { border-color: var(--green); background: color-mix(in srgb, var(--green) 8%, transparent); }
   .flow-node.highlight-purple { border-color: var(--accent2); background: color-mix(in srgb, var(--accent2) 8%, transparent); }
   .flow-arrow-down { text-align: center; color: var(--text-sub); font-size: 20px; padding: 6px 0; }
-  @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) {
+    .container { padding: ${T[space3]}px ${T[space2]}px ${T[space6]}px; }
+    .card-grid { grid-template-columns: 1fr; }
+    h1 { font-size: ${T[h1m]}px; }
+    table { display: block; width: max-content; max-width: 100%; overflow-x: auto; }
+  }
   @media print {
     @page { size: A4; margin: 8mm 10mm; }
     :root {

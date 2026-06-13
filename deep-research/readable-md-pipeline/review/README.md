@@ -39,6 +39,7 @@ review/
 | **Alignment** | — | 端揃え・グリッドの乱れ (目視/スクショ) |
 | **Proximity** | — | 関連要素のグルーピング・余白設計 (目視) |
 | **Typography** | 行長 (1 行の文字数)・行間・見出し階層 | — |
+| **Responsive** | モバイル breakpoint の有無・表の横溢れ対策・viewport meta | 実機幅の崩れ (Lv2 で実測) |
 
 ## 実行方法
 
@@ -107,6 +108,11 @@ Stage 2 も入れておくと `--theme` 省略で動く。
   (WCAG AA・modular scale・8px グリッドを構築的に満たす)。accent/bg が 4.90:1 のように
   閾値直上に調整されるのは、明度調整ループが効いている証拠。色は color-mix で
   トークン由来に統一 (hue を変えると tag/box も追従)。
+- **レスポンシブ (スマホ/PC 両対応) を単一ソースで担保**: theme に mobile breakpoint
+  (`@media max-width:768px`) を追加し、余白を詰める・h1 を一段下げる・**広い表を横スクロール化**
+  (GitHub md と同手法、ページ全体の横溢れを防止)。手調整 theme と gen-theme 生成側の両方に
+  入れ、design-audit が breakpoint / 表の横溢れ対策 / viewport meta を静的検査する。
+  実機幅でのレイアウト崩れ実測は Lv2 (geometry-audit) の領分。
 - コントラスト比は hex から WCAG 相対輝度を awk で計算 (node 不要)。
 - 整列/近接の視覚評価はスクショが要る。chromium 無し環境ではマークアップ推論に留め、
   その旨を明記する方針 (skill に記載)。

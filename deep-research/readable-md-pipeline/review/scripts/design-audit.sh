@@ -179,6 +179,37 @@ if [[ ${#HTML_FILES[@]} -gt 0 ]]; then
 fi
 
 echo ""
+echo "## Responsive — スマホ/PC 両対応 (静的)"
+# theme: モバイル用ブレークポイントがあるか
+if grep -qE '@media[^{]*max-width' "$THEME"; then
+  echo "  ${C_OK}OK theme: モバイル用ブレークポイント (@media max-width) あり${C_RST}"
+else
+  echo "  ${C_WARN}~ theme: モバイル用ブレークポイントなし (PC 幅のままスマホ表示)${C_RST}"
+  total_warn=$((total_warn + 1))
+fi
+# theme: 広い表の横溢れ対策があるか (display:block / overflow / max-content)
+if grep -qE 'table[^}]*(overflow|display:[[:space:]]*block|max-content)' "$THEME"; then
+  echo "  ${C_OK}OK theme: 表の横スクロール対応あり (スマホでページ横溢れを防止)${C_RST}"
+else
+  echo "  ${C_WARN}~ theme: 表の横溢れ対策なし (広い表がスマホでページを横スクロールさせる)${C_RST}"
+  total_warn=$((total_warn + 1))
+fi
+# html: viewport meta があるか (完全な HTML 文書のときだけ。theme 断片は対象外)
+if [[ ${#HTML_FILES[@]} -gt 0 ]]; then
+  for f in "${HTML_FILES[@]}"; do
+    [[ -f "$f" ]] || continue
+    grep -qiE '<html|<!doctype|<body' "$f" || continue
+    if grep -q 'name="viewport"' "$f"; then
+      echo "  ${C_OK}OK ${f}: viewport meta あり${C_RST}"
+    else
+      echo "  ${C_WARN}~ ${f}: viewport meta なし (スマホで PC 幅に縮小表示される)${C_RST}"
+      total_warn=$((total_warn + 1))
+    fi
+  done
+fi
+echo "  ${C_DIM}(実機幅でのレイアウト崩れ・overflow は Lv2 geometry-audit で実測 — DESIGN-CEILING.md)${C_RST}"
+
+echo ""
 echo "## Alignment (A) / Proximity (P)"
 echo "  ${C_DIM}静的監査の範囲外。レンダリング結果に design-review スキル (LLM) で C.R.A.P. を当てる。${C_DIM}"
 echo "  ${C_DIM}(端揃え・グリッドの乱れ・関連要素のグルーピングは目視/スクショ判定)${C_RST}"
