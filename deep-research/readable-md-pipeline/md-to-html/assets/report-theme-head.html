@@ -1,0 +1,212 @@
+<!--
+  md-to-html 共通テーマ (single source of truth)
+  生成する HTML の <head> 内にこの <style> ブロックを「逐語」で挿入する。
+  画面はダークテーマ、印刷 (PDF) は A4 ライトテーマに自動切替。
+  デザイントークンは変更不可。新規クラスを足す場合も画面/印刷の両方を必ず併記。
+  由来: ai-research-pipeline の md-to-html スキル (PR #506) の共通テーマを移植。
+-->
+<style>
+  /* === デザイントークン (変更不可) === */
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242836;
+    --border: #2e3345;
+    --text: #e4e6ed;
+    --text-sub: #9498a8;
+    --accent: #6c8cff;
+    --accent2: #a78bfa;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --cyan: #22d3ee;
+    --measure: 38rem;   /* 本文の読み幅: ~38 全角字。表/カードは全幅のまま */
+  }
+
+  /* === 画面表示スタイル === */
+  /* レイアウト */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Hiragino Sans', 'Noto Sans JP', 'Noto Sans CJK JP', -apple-system, sans-serif;
+         background: var(--bg); color: var(--text); line-height: 1.7; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* 見出し */
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--text-sub); font-size: 14px; margin-bottom: 48px; }
+  h2 { font-size: 20px; font-weight: 700; margin: 48px 0 20px; padding-bottom: 8px;
+       border-bottom: 2px solid var(--accent); display: inline-block; }
+  h3 { font-size: 18px; font-weight: 600; color: var(--accent2); margin: 28px 0 12px; }
+
+  /* カード */
+  .card { background: var(--surface); border: 1px solid var(--border);
+          border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+               gap: 16px; margin-bottom: 20px; }
+  .card-sm { background: var(--surface2); border: 1px solid var(--border);
+             border-radius: 8px; padding: 16px; }
+  .card-sm .label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+                    letter-spacing: 1px; color: var(--text-sub); margin-bottom: 6px; }
+  .card-sm .value { font-size: 20px; font-weight: 700; }
+  .card-sm .desc { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+
+  /* タグ */
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 4px;
+         font-size: 12px; font-weight: 600; margin-right: 6px; }
+  .tag-blue   { background: rgba(108,140,255,0.15); color: var(--accent); }
+  .tag-purple { background: rgba(167,139,250,0.15); color: var(--accent2); }
+  .tag-green  { background: rgba(52,211,153,0.15);  color: var(--green); }
+  .tag-yellow { background: rgba(251,191,36,0.15);  color: var(--yellow); }
+  .tag-red    { background: rgba(248,113,113,0.15); color: var(--red); }
+  .tag-cyan   { background: rgba(34,211,238,0.15);  color: var(--cyan); }
+
+  /* テーブル */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th { text-align: left; padding: 10px 12px; background: var(--surface2);
+       color: var(--text-sub); font-weight: 600; font-size: 12px;
+       text-transform: uppercase; letter-spacing: 0.5px;
+       border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* 強調ボックス */
+  .highlight-box { background: rgba(108,140,255,0.06);
+                   border: 1px solid rgba(108,140,255,0.25);
+                   border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+  .highlight-box .title { color: var(--accent); font-weight: 700;
+                          font-size: 13px; margin-bottom: 6px; }
+  .highlight-box p, .highlight-box li { font-size: 13px; color: var(--text-sub); }
+  .highlight-box strong { color: var(--text); }
+  .highlight-box ul { padding-left: 18px; margin-top: 6px; }
+
+  .warn-box { background: rgba(251,191,36,0.05);
+              border: 1px solid rgba(251,191,36,0.2);
+              border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+  .warn-box .title { color: var(--yellow); font-weight: 700;
+                     font-size: 13px; margin-bottom: 6px; }
+  .warn-box p, .warn-box li { font-size: 13px; color: var(--text-sub); }
+  .warn-box strong { color: var(--text); }
+
+  .risk-box { background: rgba(248,113,113,0.05);
+              border: 1px solid rgba(248,113,113,0.2);
+              border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+  .risk-box .title { color: var(--red); font-weight: 700;
+                     font-size: 13px; margin-bottom: 6px; }
+  .risk-box p, .risk-box li { font-size: 13px; color: var(--text-sub); }
+  .risk-box strong { color: var(--text); }
+
+  .ok-box { background: rgba(52,211,153,0.05);
+            border: 1px solid rgba(52,211,153,0.2);
+            border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+  .ok-box .title { color: var(--green); font-weight: 700;
+                   font-size: 13px; margin-bottom: 6px; }
+  .ok-box p, .ok-box li { font-size: 13px; color: var(--text-sub); }
+  .ok-box strong { color: var(--text); }
+
+  /* その他 */
+  blockquote { border-left: 3px solid var(--accent2); padding: 8px 14px;
+               margin: 10px 0; background: rgba(167,139,250,0.04);
+               font-size: 13px; color: var(--text-sub); font-style: italic; }
+  blockquote strong { color: var(--text); font-style: normal; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  .note { font-size: 13px; color: var(--text-sub); padding: 12px 16px;
+          background: var(--surface2); border-radius: 8px;
+          border-left: 3px solid var(--accent); margin: 12px 0; }
+
+  /* 基本要素 (code / list / link) */
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+        padding: 14px 16px; margin: 12px 0; overflow-x: auto;
+        font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+        font-size: 12.5px; line-height: 1.5; color: var(--text); }
+  code { font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+         font-size: 0.88em; background: var(--surface2); border: 1px solid var(--border);
+         border-radius: 4px; padding: 1px 5px; color: var(--cyan); }
+  pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 3px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  /* 本文の読み幅 (measure): 散文は読みやすい行長に制限。表・カード・見出しは全幅のまま */
+  .container > p, .container > ul, .container > ol, blockquote { max-width: var(--measure); }
+
+  /* フロー図 */
+  .vflow { display: flex; flex-direction: column; align-items: center;
+           gap: 0; margin: 20px auto; max-width: 700px; }
+  .flow-node { background: var(--surface2); border: 1px solid var(--border);
+               border-radius: 10px; padding: 12px 18px; text-align: center;
+               width: 100%; max-width: 500px; }
+  .flow-node .role { font-size: 11px; color: var(--text-sub); margin-bottom: 4px; }
+  .flow-node .action { font-size: 13px; font-weight: 600; }
+  .flow-node.highlight { border-color: var(--accent);
+                         background: rgba(108,140,255,0.08); }
+  .flow-node.highlight-green { border-color: var(--green);
+                               background: rgba(52,211,153,0.08); }
+  .flow-node.highlight-purple { border-color: var(--accent2);
+                                background: rgba(167,139,250,0.08); }
+  .flow-arrow-down { text-align: center; color: var(--text-sub);
+                     font-size: 20px; padding: 6px 0; }
+
+  /* レスポンシブ (モバイル) — 単一ソースで PC/スマホ両対応 */
+  @media (max-width: 768px) {
+    .container { padding: 24px 16px 48px; }       /* 余白を詰める */
+    .card-grid { grid-template-columns: 1fr; }     /* カードは 1 列 */
+    h1 { font-size: 24px; }                        /* 見出しを一段下げる */
+    /* 広い表は横スクロール化 (ページ全体の横溢れを防ぐ。GitHub md と同手法) */
+    table { display: block; width: max-content; max-width: 100%; overflow-x: auto; }
+  }
+
+  /* === 印刷スタイル (PDF 出力用・必須) === */
+  @media print {
+    @page { size: A4; margin: 8mm 10mm; }
+    :root {
+      --bg: #ffffff; --surface: #ffffff; --surface2: #f5f6f8; --border: #d5d7de;
+      --text: #1a1d27; --text-sub: #5a6070; --accent: #3b5bdb; --accent2: #7c5ce6;
+      --green: #16a34a; --yellow: #b45309; --red: #dc2626;
+      --cyan: #0891b2; --measure: none;
+    }
+    body { background: #fff; color: #1a1d27; font-size: 9px; line-height: 1.35;
+           -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .container { max-width: 100%; padding: 0; }
+
+    h1 { font-size: 16px; margin-bottom: 2px; }
+    h2 { font-size: 12px; margin: 8px 0 4px; padding-bottom: 2px; page-break-after: avoid; }
+    h3 { font-size: 11px; margin: 6px 0 3px; page-break-after: avoid; }
+    p { margin-bottom: 3px; font-size: 9px; }
+    .subtitle { margin-bottom: 6px; font-size: 9px; }
+    .divider, hr { margin: 6px 0; }
+
+    .card { padding: 6px 8px; margin-bottom: 4px; break-inside: avoid; border-radius: 4px; }
+    .card p { line-height: 1.4; }
+    .card-grid { gap: 4px; margin-bottom: 4px; }
+    .card-sm { padding: 4px 6px; break-inside: avoid; border-radius: 4px; }
+    .card-sm .label { font-size: 7px; margin-bottom: 1px; }
+    .card-sm .value { font-size: 11px; }
+    .card-sm .desc { font-size: 8px; margin-top: 1px; }
+
+    table { font-size: 8px; margin: 3px 0; }
+    th { padding: 3px 4px; font-size: 7px; }
+    td { padding: 3px 4px; }
+    .tag { border: 1px solid currentColor; padding: 0 4px; font-size: 7px; }
+
+    .highlight-box, .warn-box, .risk-box, .ok-box {
+      padding: 5px 8px; margin: 4px 0; break-inside: avoid; border-radius: 4px; }
+    .highlight-box .title, .warn-box .title, .risk-box .title, .ok-box .title { font-size: 9px; margin-bottom: 2px; }
+    .highlight-box p, .warn-box p, .risk-box p, .ok-box p,
+    .highlight-box li, .warn-box li, .risk-box li, .ok-box li { font-size: 8px; }
+    blockquote { font-size: 8px; padding: 4px 8px; }
+
+    .vflow { margin: 4px auto; }
+    .flow-node { padding: 3px 8px; break-inside: avoid; border-radius: 4px; }
+    .flow-node .role { font-size: 7px; margin-bottom: 1px; }
+    .flow-node .action { font-size: 8px; }
+    .flow-arrow-down { padding: 1px 0; font-size: 12px; line-height: 1; }
+
+    .note { padding: 4px 8px; font-size: 8px; margin: 4px 0; border-radius: 4px; }
+    pre { font-size: 7.5px; padding: 5px 7px; break-inside: avoid; border-radius: 4px; }
+    code { font-size: 0.85em; padding: 0 2px; }
+    ul, ol { padding-left: 16px; margin: 4px 0; }
+    li { margin: 1px 0; }
+    .card, .flow-node { page-break-inside: avoid; }
+  }
+</style>
