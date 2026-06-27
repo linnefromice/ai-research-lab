@@ -284,10 +284,28 @@ multimodal 生ダンプ**（`config.json` の `model_type=gemma4_unified` / `Gem
   （`lms ls` 上の `gemma-4-12b`）。ディスク 11GB を取り戻せる。
 
 **残タスク（ユーザー検証 / 次段）**:
-1. `avatar-start.sh` で **Live2D 込みの実会話**を通す（ASR→LLM→VOICEVOX→Live2D の end-to-end）。
+1. ~~`avatar-start.sh` で Live2D 込みの実会話~~ → **実施済**（下記 persona 知見）。
 2. 全サービス常駐時の 32GB 占有を実測（`README [3]` のメモリ前提を確定）。
 3. multi-turn での persona ドリフト / thinking 出現の有無を長め会話で確認。
 4. 良ければ STEP 2（Ollama `gemma4:12b-it-qat` 等）への移行を検討（lifecycle 自動化の利得）。
+
+### 2026-06-27（実会話）persona の過剰制約を発見 → 条件付き深さ persona で解決
+
+`avatar-start.sh` で実会話したところ応答が"微妙"（短く当たり障りなし／相談質問でキャラの趣味=お茶・読書に
+脱線）。**persona だけ差し替えた A/B で、モデルではなく persona が原因と確定**（gemma-4-12b-it は緩和 persona
+だとポモドーロ等の具体助言を返せた）。真因は現 persona の `1〜2文・3文以上NG` + 強キャラ設定の**過剰制約**
+（phase7 [2] が予告した「過学習傾向」が顕在化）。
+
+対処: OLV `persona_prompt` を**条件付き深さ版**に更新済み —「普段は1〜2文で簡潔。**ただし相談/助けを求められた
+ときだけ 2〜4 文で具体的に踏み込む**（手順・最初の一歩を1つ添える）。知らない事実は断定せず助言に留める」。
+検証で **雑談=簡潔維持 / 相談=具体化 / 3つのNO=維持** の全てを確認。backup `conf.yaml.bak-pre-persona` あり。
+
+> 教訓: 字数ハード制約はキャラの一貫性に効くが**実用性を殺す**。雑談/相談で深さを切り替える分岐設計が要。
+
+### 🔁 リサーチへの差し戻し
+本検証で判明した「初手の研究推奨が外れた点（model ID の `-it` 取り違え・ランタイム前提欠落・chat_template・
+thinking・latency 過大評価・persona 過剰制約）」を **[`./feedback-to-research.md`](./feedback-to-research.md)** に
+まとめた。これを deep-research repo に戻して**再リサーチ**の入力にする。
 
 ## 参照（一次情報）
 - [Introducing Gemma 4 12B (Google blog)](https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemma-4-12b/)
