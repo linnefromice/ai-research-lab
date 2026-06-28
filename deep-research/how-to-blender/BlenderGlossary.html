@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blender 用語集 / 補足資料</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f9fb;--surface:#fff;--border:#dde1ec;--border-light:#edf0f8;
+  --text:#1a1d2e;--text-sub:#5c6080;--text-faint:#9098b0;
+  --accent:#2952cc;--accent-light:#eef1fc;
+  --accent2:#6b46c1;--accent2-light:#f3f0ff;
+  --green:#16a34a;--green-light:#f0fdf4;--green-bd:#86efac;
+  --warn:#b45309;--warn-bg:#fffbeb;--warn-bd:#fbbf24;
+  --cyan:#0369a1;--cyan-light:#f0f9ff;--cyan-bd:#7dd3fc;
+  --orange:#c2410c;--orange-light:#fff7ed;--orange-bd:#fdba74;
+  --kbd-bg:#f1f2f8;--kbd-bd:#c0c5d8;--kbd-sh:#a0a5c0;
+  --th-bg:#eef0f8;
+}
+body{font-family:'Hiragino Sans','Noto Sans JP',system-ui,-apple-system,sans-serif;
+     background:var(--bg);color:var(--text);font-size:13px;line-height:1.6}
+.wrap{max-width:1300px;margin:0 auto;padding:28px 20px 64px}
+
+/* header */
+.ph{margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--accent)}
+.ph h1{font-size:20px;font-weight:700}
+.ph h1 span{color:var(--accent)}
+.ph small{font-size:11px;color:var(--text-sub);display:block;margin-top:3px}
+
+/* category sections */
+.cat{margin-bottom:28px}
+.cat-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--accent);border-bottom:2px solid var(--accent-light);
+  padding-bottom:5px;margin-bottom:12px
+}
+.cat-title .cat-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:5px;
+  background:var(--accent-light);font-size:13px
+}
+
+/* term grid */
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.tg.wide{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
+.tg.full{grid-template-columns:1fr}
+
+/* term card */
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:6px;
+     padding:9px 12px;display:flex;flex-direction:column;gap:3px}
+.tc-head{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.tc-name{font-size:12px;font-weight:700;color:var(--text)}
+.tc-en{font-size:10.5px;color:var(--text-sub)}
+.tc-def{font-size:11px;color:var(--text-sub);line-height:1.5}
+.tc-key{margin-top:2px}
+
+/* term table (for structured data) */
+.ttable{width:100%;border-collapse:collapse;font-size:11.5px}
+.ttable thead tr{background:var(--th-bg)}
+.ttable th{text-align:left;padding:4px 10px;font-size:9.5px;font-weight:700;
+             text-transform:uppercase;letter-spacing:.5px;color:var(--text-faint);
+             border-bottom:1px solid var(--border)}
+.ttable td{padding:4px 10px;border-bottom:1px solid var(--border-light);vertical-align:top;line-height:1.45}
+.ttable tr:last-child td{border-bottom:none}
+.ttable .td-term{font-weight:700;white-space:nowrap;color:var(--text)}
+.ttable .td-en{color:var(--text-faint);font-size:10px}
+.ttable .td-key{white-space:nowrap}
+
+/* table wrapper card */
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px}
+.tcard-sub{background:var(--th-bg);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px}
+
+/* color variants for category accents */
+.cat.mod .cat-title{color:var(--accent2);border-color:var(--accent2-light)}
+.cat.mod .cat-icon{background:var(--accent2-light)}
+.cat.tool .cat-title{color:var(--green);border-color:var(--green-light)}
+.cat.tool .cat-icon{background:var(--green-light)}
+.cat.anim .cat-title{color:var(--cyan);border-color:var(--cyan-light)}
+.cat.anim .cat-icon{background:var(--cyan-light)}
+.cat.rig .cat-title{color:var(--orange);border-color:var(--orange-light)}
+.cat.rig .cat-icon{background:var(--orange-light)}
+.cat.mod .ttable th{color:var(--accent2)}
+.cat.tool .ttable th{color:var(--green)}
+.cat.anim .ttable th{color:var(--cyan)}
+.cat.rig .ttable th{color:var(--orange)}
+
+/* kbd */
+kbd{display:inline-block;
+     font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+     font-size:.82em;font-weight:600;background:var(--kbd-bg);
+     border:1px solid var(--kbd-bd);border-bottom:2px solid var(--kbd-sh);
+     border-radius:4px;padding:1px 5px;color:var(--text);white-space:nowrap;line-height:1.3}
+
+/* badges */
+.bw{display:inline-block;background:var(--warn-bg);border:1px solid var(--warn-bd);
+     color:var(--warn);border-radius:3px;font-size:8.5px;font-weight:700;padding:0 4px;margin-left:2px}
+.bi{display:inline-block;background:var(--accent-light);border:1px solid rgba(41,82,204,.25);
+     color:var(--accent);border-radius:3px;font-size:8.5px;font-weight:700;padding:0 4px;margin-left:2px}
+
+/* emphasis inside def */
+.tc-def strong{color:var(--text);font-weight:600}
+
+/* divider */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* shading mode visual */
+.shading-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.shading-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.shading-card .sh-name{font-size:11px;font-weight:700;margin-bottom:3px}
+.shading-card .sh-def{font-size:10.5px;color:var(--text-sub)}
+.shading-card.wf{border-color:var(--border);background:var(--th-bg)}
+.shading-card.so{border-color:var(--accent);background:var(--accent-light)}
+.shading-card.mp{border-color:var(--accent2);background:var(--accent2-light)}
+.shading-card.rd{border-color:var(--green-bd);background:var(--green-light)}
+
+/* pie menu grid */
+.pie-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
+.pie-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.pie-card .pc-key{font-weight:700;margin-bottom:3px;font-size:11.5px}
+.pie-card .pc-def{font-size:10.5px;color:var(--text-sub);line-height:1.4}
+
+/* === PRINT === */
+@media print{
+  @page{size:A4;margin:8mm 10mm}
+  body{font-size:7.5px;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:100%;padding:0}
+  .ph{margin-bottom:7px;padding-bottom:5px}
+  .ph h1{font-size:13px}
+  .ph small{font-size:7px;margin-top:1px}
+  .cat{margin-bottom:10px;break-inside:avoid}
+  .cat-title{font-size:7.5px;padding-bottom:3px;margin-bottom:6px}
+  .cat-icon{width:16px;height:16px;font-size:10px;border-radius:3px}
+  .tg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .tg.wide{grid-template-columns:1fr 1fr}
+  .tg.full{grid-template-columns:1fr}
+  .tc{padding:4px 7px;gap:1px;border-radius:3px}
+  .tc-name{font-size:8px}
+  .tc-en{font-size:7.5px}
+  .tc-def{font-size:7.5px}
+  .ttable{font-size:7.5px}
+  .ttable th{font-size:6.5px;padding:2px 6px}
+  .ttable td{padding:2px 6px}
+  .tcard,.tcard-sub{border-radius:3px;margin-bottom:4px}
+  kbd{font-size:.78em;padding:0 3px;border-bottom-width:1px;border-radius:2px}
+  .bw,.bi{font-size:6.5px;padding:0 2px}
+  .shading-grid{gap:4px}
+  .shading-card{padding:4px 6px;border-radius:3px}
+  .shading-card .sh-name{font-size:7.5px;margin-bottom:1px}
+  .shading-card .sh-def{font-size:7px}
+  .pie-grid{gap:4px}
+  .pie-card{padding:4px 6px;border-radius:3px}
+  .pie-card .pc-key{font-size:8px;margin-bottom:1px}
+  .pie-card .pc-def{font-size:7px}
+  .divider{margin:8px 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="ph">
+  <h1>Blender <span>用語集 / 補足資料</span></h1>
+  <small>ショートカット集 (BlenderShortcuts_Mac_*) で登場する概念・機能名の早見表 ／ 「このキーを押すと何が起きるか」を理解するための補足</small>
+</header>
+
+<!-- マウスボタン -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">🖱</span> マウスボタン略記</div>
+  <div class="tcard">
+    <table class="ttable">
+      <thead><tr><th>略記</th><th>正式名</th><th>説明</th></tr></thead>
+      <tbody>
+        <tr><td class="td-term">LMB</td><td>Left Mouse Button</td><td>左クリック。選択・確定。トラックパッドでは通常クリック</td></tr>
+        <tr><td class="td-term">RMB</td><td>Right Mouse Button</td><td>右クリック。コンテキストメニュー・操作キャンセル。トラックパッドでは 2 本指クリック</td></tr>
+        <tr><td class="td-term">MMB</td><td>Middle Mouse Button</td><td>ホイールクリック。視点操作 (Orbit/Pan) に多用。トラックパッドでは要設定 (Emulate 3 Button Mouse)</td></tr>
+        <tr><td class="td-term">Scroll</td><td>マウスホイール</td><td>ズームイン/アウト、フレームスクロールなど</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- インターフェース -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">🖥</span> インターフェース</div>
+  <div class="tg wide">
+    <div class="tc"><div class="tc-head"><span class="tc-name">3D ビューポート</span></div><div class="tc-def">Blender のメイン作業エリア。3D 空間でオブジェクトを表示・操作する場所。画面の大半を占める</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">N パネル</span><span class="tc-en">サイドバー</span></div><div class="tc-def">ビューポート右端のパネル。位置/回転/スケールの数値入力、アドオン設定など。<kbd>N</kbd> でトグル</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">T パネル</span><span class="tc-en">ツールバー</span></div><div class="tc-def">ビューポート左端。アクティブなツール (移動・押し出しなど) のアイコンが並ぶ。<kbd>T</kbd> でトグル</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">アウトライナー</span><span class="tc-en">Outliner</span></div><div class="tc-def">画面右上のシーン構造ツリー。オブジェクト・コレクションの親子関係を管理する</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">プロパティエディター</span></div><div class="tc-def">画面右下。オブジェクト/マテリアル/物理シミュレーションのプロパティを編集。<kbd>Shift</kbd>+<kbd>F7</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ヘッダー</span><span class="tc-en">Header</span></div><div class="tc-def">各ウィンドウ上部の細いバー。モード切替・表示オプションのメニューがある</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">クアッドビュー</span><span class="tc-en">Quad View</span></div><div class="tc-def">ビューポートを正面/側面/天面/透視の 4 分割で表示。正確な位置合わせに便利。<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Q</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">3D カーソル</span></div><div class="tc-def">3D 空間に置ける特殊な点。原点・ピボット・スナップターゲットに使用。<kbd>Shift</kbd>+<kbd>C</kbd> で中心へ</div></div>
+  </div>
+</section>
+
+<!-- モード -->
+<section class="cat mod">
+  <div class="cat-title"><span class="cat-icon">🔄</span> モード (Mode)</div>
+  <div class="tcard">
+    <table class="ttable">
+      <thead><tr><th>モード</th><th>説明</th><th>切替</th></tr></thead>
+      <tbody>
+        <tr><td class="td-term">オブジェクトモード</td><td>シーン全体のオブジェクトを選択/移動/配置。デフォルトモード</td><td><kbd>Tab</kbd></td></tr>
+        <tr><td class="td-term">編集モード</td><td>選択オブジェクトの頂点/エッジ/フェースを直接編集する</td><td><kbd>Tab</kbd></td></tr>
+        <tr><td class="td-term">スカルプトモード</td><td>粘土を彫るように有機的な形状を作る</td><td><kbd>Ctrl</kbd>+<kbd>Tab</kbd> パイ</td></tr>
+        <tr><td class="td-term">ポーズモード</td><td>アーマチュアのボーンを動かしてポーズ/アニメーションを作る</td><td><kbd>Ctrl</kbd>+<kbd>Tab</kbd> パイ</td></tr>
+        <tr><td class="td-term">ウェイトペイント</td><td>メッシュの各頂点にボーンの影響度 (ウェイト) を塗る</td><td><kbd>Ctrl</kbd>+<kbd>Tab</kbd> パイ</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">透視投影</span><span class="tc-en">Perspective</span></div><div class="tc-def">遠近感あり・現実と同じ見え方。デフォルト。<kbd>5</kbd> (Emulate Numpad) でトグル</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">平行投影</span><span class="tc-en">Orthographic</span></div><div class="tc-def">遠近感なし・奥行き方向に歪まない。正確な形状確認に便利。<kbd>5</kbd> でトグル</div></div>
+  </div>
+</section>
+
+<!-- ビュー操作 -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">👁</span> ビュー操作</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">オービット</span><span class="tc-en">Orbit</span></div><div class="tc-def">視点をシーン中心周りに回転。<kbd>MMB</kbd> ドラッグ</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">パン</span><span class="tc-en">Pan</span></div><div class="tc-def">視点を上下左右に平行移動。<kbd>Shift</kbd>+<kbd>MMB</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">フライモード</span><span class="tc-en">Fly Mode</span></div><div class="tc-def">FPS ゲームのように視点を移動。起動後 WASD + マウスで操作。<kbd>Shift</kbd>+<kbd>`</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">アイソレート</span><span class="tc-en">Isolate</span></div><div class="tc-def">選択オブジェクトだけを表示し他を非表示に。集中して作業したいときに。Numpad <kbd>/</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">X-Ray</span></div><div class="tc-def">メッシュを半透明化して裏側の要素も選択可能にする。Edit Mode での選択作業に必須。<kbd>Alt</kbd>+<kbd>Z</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">フォーカス</span><span class="tc-en">Focus / View Selected</span></div><div class="tc-def">選択オブジェクトを画面中央に収めてズーム。行方不明のオブジェクト探しに。Numpad <kbd>.</kbd></div></div>
+  </div>
+</section>
+
+<!-- 変換操作 -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">↔</span> 変換操作 (Transform)</div>
+  <div class="tg wide">
+    <div class="tc"><div class="tc-head"><span class="tc-name">移動</span><span class="tc-en">Grab / Move</span></div><div class="tc-def"><kbd>G</kbd> → <kbd>X</kbd>/<kbd>Y</kbd>/<kbd>Z</kbd> で軸限定。数値直接入力も可 (例: <kbd>G</kbd> <kbd>Z</kbd> <kbd>2</kbd> <kbd>Enter</kbd> で Z 軸方向に 2 移動)</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">スケール</span><span class="tc-en">Scale</span></div><div class="tc-def"><kbd>S</kbd> → 軸指定可。<kbd>S</kbd> <kbd>2</kbd> <kbd>Enter</kbd> で 2 倍に拡大</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">回転</span><span class="tc-en">Rotate</span></div><div class="tc-def"><kbd>R</kbd> → 軸指定可。<kbd>R</kbd> <kbd>Z</kbd> <kbd>45</kbd> <kbd>Enter</kbd> で Z 軸 45° 回転</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ローカル軸</span></div><div class="tc-def">オブジェクト自身の座標軸。<kbd>R</kbd> → <kbd>X</kbd>,<kbd>X</kbd> のように軸キーを 2 回押すとローカル軸での操作になる</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ピボットポイント</span><span class="tc-en">Pivot Point</span></div><div class="tc-def">回転/スケールの中心点。<strong>個別オリジン</strong> (各オブジェクトの原点) / <strong>3D カーソル</strong> / <strong>アクティブ要素</strong> など。<kbd>.</kbd> パイで切替</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">変換オリエンテーション</span></div><div class="tc-def">X/Y/Z 軸の向きの基準。<strong>Global</strong> (ワールド座標) / <strong>Local</strong> (オブジェクト固有) / <strong>Normal</strong> (フェースの法線方向) など。<kbd>,</kbd> パイで切替</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">スナッピング</span><span class="tc-en">Snapping</span></div><div class="tc-def">移動/回転/スケールを格子点・頂点・面などに吸着。<kbd>Shift</kbd>+<kbd>Tab</kbd> でトグル。<kbd>Shift</kbd>+<kbd>S</kbd> パイで座標コピーも可</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">プロポーショナル編集</span></div><div class="tc-def">選択頂点を動かすと周囲の頂点も追従して変形。スムーズな地形・有機体の変形に。<kbd>O</kbd> でトグル。Scroll でフォールオフ幅変更</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">適用</span><span class="tc-en">Apply</span></div><div class="tc-def">位置/回転/スケールを「初期値 (0/0/1)」として確定。モディファイアーの確定にも使用。<kbd>Ctrl</kbd>+<kbd>A</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">クリア</span><span class="tc-en">Clear</span></div><div class="tc-def">変換を初期値に戻す。位置クリア <kbd>Alt</kbd>+<kbd>G</kbd> / 回転クリア <kbd>Alt</kbd>+<kbd>R</kbd> / スケールクリア <kbd>Alt</kbd>+<kbd>S</kbd></div></div>
+  </div>
+</section>
+
+<!-- オブジェクト管理 -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">📦</span> オブジェクト管理</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">複製</span><span class="tc-en">Duplicate</span></div><div class="tc-def">独立したコピーを作成。<kbd>Shift</kbd>+<kbd>D</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">リンク複製</span><span class="tc-en">Linked Duplicate</span></div><div class="tc-def">メッシュデータを共有するコピー。片方の形状を変えると両方変わる。<kbd>Alt</kbd>+<kbd>D</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">結合</span><span class="tc-en">Join</span></div><div class="tc-def">複数オブジェクトを 1 つに合体させる。<kbd>Ctrl</kbd>+<kbd>J</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">親子関係</span><span class="tc-en">Parent / Child</span></div><div class="tc-def">親を動かすと子も追従。キャラの持ち物や車輪などに。<kbd>Ctrl</kbd>+<kbd>P</kbd> で設定 / <kbd>Alt</kbd>+<kbd>P</kbd> で解除</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">コレクション</span><span class="tc-en">Collection</span></div><div class="tc-def">オブジェクトをグループ管理する単位。アウトライナーのフォルダ相当。<kbd>M</kbd> でコレクション移動</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">サブディビジョン</span></div><div class="tc-def">メッシュを細分化して滑らかにするモディファイアー。数値が高いほど細かく滑らか。<kbd>Ctrl</kbd>+<kbd>数字</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ミラー</span><span class="tc-en">Mirror</span></div><div class="tc-def">X/Y/Z 軸を指定してオブジェクトを鏡像変換。<kbd>Ctrl</kbd>+<kbd>M</kbd> → 軸指定</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- メッシュ要素 -->
+<section class="cat tool">
+  <div class="cat-title"><span class="cat-icon">🔷</span> メッシュ要素 (Edit Mode)</div>
+  <div class="tcard">
+    <table class="ttable">
+      <thead><tr><th>名称</th><th>英語</th><th>説明</th><th>選択モード</th></tr></thead>
+      <tbody>
+        <tr><td class="td-term">頂点</td><td class="td-en">Vertex / Vertices</td><td>メッシュの点。すべての形状の基本単位</td><td><kbd>1</kbd></td></tr>
+        <tr><td class="td-term">エッジ</td><td class="td-en">Edge</td><td>2 頂点を結ぶ線</td><td><kbd>2</kbd></td></tr>
+        <tr><td class="td-term">フェース</td><td class="td-en">Face</td><td>3 頂点以上で囲まれた面。Tri (三角) / Quad (四角) / Ngon (多角形)</td><td><kbd>3</kbd></td></tr>
+        <tr><td class="td-term">法線</td><td class="td-en">Normal</td><td>フェースの「表」の向きを示すベクトル。逆向きだとレンダリングで黒く見える。<kbd>Shift</kbd>+<kbd>N</kbd> で再計算</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">ループ選択</span><span class="tc-en">Loop Selection</span></div><div class="tc-def">エッジ/フェースのループを一括選択。<kbd>Alt</kbd>+<kbd>LMB</kbd>。四角形メッシュ (クワッドポリ) が前提</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">リング選択</span><span class="tc-en">Ring Selection</span></div><div class="tc-def">エッジループに垂直なエッジ列を選択。<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>RMB</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">リンク選択</span><span class="tc-en">Linked Selection</span></div><div class="tc-def">接続されているメッシュ全体を選択。<kbd>Ctrl</kbd>+<kbd>L</kbd> (全体) / <kbd>L</kbd> (カーソル下)</div></div>
+  </div>
+</section>
+
+<!-- モデリングツール -->
+<section class="cat tool">
+  <div class="cat-title"><span class="cat-icon">🔧</span> モデリングツール (Edit Mode)</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">押し出し</span><span class="tc-en">Extrude</span></div><div class="tc-def">選択頂点/エッジ/フェースを引き出して新しいジオメトリを追加。<strong>最頻出操作</strong>。<kbd>E</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">インセット</span><span class="tc-en">Inset</span></div><div class="tc-def">フェースを内側に縮小した新しいフェースを作る。窓枠・穴の作成に。<kbd>I</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ベベル</span><span class="tc-en">Bevel</span></div><div class="tc-def">エッジを面取り (斜め切り) して滑らかにする。<kbd>Ctrl</kbd>+<kbd>B</kbd>。Scroll でセグメント数調整</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ループカット</span><span class="tc-en">Loop Cut</span></div><div class="tc-def">メッシュを一周切断して新しいエッジループを追加。<kbd>Ctrl</kbd>+<kbd>R</kbd>。Scroll で本数変更</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">スライド</span><span class="tc-en">Slide</span></div><div class="tc-def">頂点/エッジを隣接エッジに沿って移動。形状を維持したまま位置調整。<kbd>G</kbd>,<kbd>G</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ナイフ</span><span class="tc-en">Knife</span></div><div class="tc-def">自由な形でメッシュを切断する。<kbd>K</kbd> で起動、<kbd>Enter</kbd> で確定</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">フィル</span><span class="tc-en">Fill Face</span></div><div class="tc-def">選択エッジ/頂点を囲んでフェースを作成。<kbd>F</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">マージ</span><span class="tc-en">Merge</span></div><div class="tc-def">複数頂点を 1 点にまとめる。<kbd>M</kbd> でどこへマージするか選択 (中心/カーソル/最初/最後)</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">リップ</span><span class="tc-en">Rip</span></div><div class="tc-def">エッジ/頂点を裂いて隙間を作る。<kbd>V</kbd>。フィルなしの穴あけ</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">シアー</span><span class="tc-en">Shear</span></div><div class="tc-def">選択要素を平行四辺形状に変形。<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ベンド</span><span class="tc-en">Bend</span></div><div class="tc-def">選択要素を弧状に曲げる。<kbd>Shift</kbd>+<kbd>W</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">エッジクリース</span><span class="tc-en">Edge Crease</span></div><div class="tc-def">サブディビジョン時のエッジの鋭さを制御。値が高いほど鋭くなる。<kbd>Shift</kbd>+<kbd>E</kbd></div></div>
+  </div>
+</section>
+
+<!-- カーブ + UV -->
+<section class="cat tool">
+  <div class="cat-title"><span class="cat-icon">〰</span> カーブ / UV テクスチャリング</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">ハンドル</span><span class="tc-en">Handle</span></div><div class="tc-def">ベジェカーブの接線方向を制御する補助点。<strong>Auto</strong> / <strong>Vector</strong> (直線) / <strong>Aligned</strong> (対称) / <strong>Free</strong> (自由)。<kbd>V</kbd> でタイプ変更</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ティルト</span><span class="tc-en">Tilt</span></div><div class="tc-def">カーブの「ねじれ」角度。カーブを押し出したときの面の向きを制御。<kbd>Ctrl</kbd>+<kbd>T</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">アンラップ</span><span class="tc-en">Unwrap</span></div><div class="tc-def">3D メッシュを展開して 2D の UV マップを作る。紙箱を展開図にするイメージ。<kbd>U</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">シーム</span><span class="tc-en">Seam</span></div><div class="tc-def">UV 展開時の「切れ目」になるエッジ。シームが UV アイランドの境界になる。<kbd>Ctrl</kbd>+<kbd>E</kbd> でマーク</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">UV アイランド</span></div><div class="tc-def">UV マップ上でシームで区切られた島状の領域。<kbd>L</kbd> でアイランド選択</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ピン</span><span class="tc-en">Pin</span></div><div class="tc-def">UV 頂点を固定して再アンラップ時に動かないようにする。<kbd>P</kbd></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- シェーディング -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">💡</span> シェーディングモード — <kbd>Z</kbd> パイで切替</div>
+  <div class="shading-grid">
+    <div class="shading-card wf"><div class="sh-name">Wireframe</div><div class="sh-def">ワイヤーフレームのみ。内部構造・裏側の確認に。X-Ray 的な用途</div></div>
+    <div class="shading-card so"><div class="sh-name">Solid</div><div class="sh-def">デフォルト。マテリアルなしの面表示。モデリング作業の基本</div></div>
+    <div class="shading-card mp"><div class="sh-name">Material Preview</div><div class="sh-def">マテリアルを反映したプレビュー。HDR ライト環境で表示。テクスチャ確認に</div></div>
+    <div class="shading-card rd"><div class="sh-name">Rendered</div><div class="sh-def">レンダーエンジンでのリアルタイムプレビュー。EEVEE なら高速で確認可能</div></div>
+  </div>
+</section>
+
+<!-- ノード -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">🔗</span> ノード (Node Editor)</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">ノード</span><span class="tc-en">Node</span></div><div class="tc-def">マテリアル・コンポジット・ジオメトリを視覚的なブロックとワイヤーで構成するシステム</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ソケット</span><span class="tc-en">Socket</span></div><div class="tc-def">ノードの入出力端子。黄: Color / 灰: Float / 紫: Vector など色で種類を識別</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">フレーム</span><span class="tc-en">Frame</span></div><div class="tc-def">関連ノードをグループ化して視覚的に整理する入れ物。<kbd>Ctrl</kbd>+<kbd>J</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ミュート</span><span class="tc-en">Mute</span></div><div class="tc-def">ノードを削除せずバイパス (無効化) する。<kbd>M</kbd>。効果の比較に便利</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">コンポジター</span><span class="tc-en">Compositor</span></div><div class="tc-def">レンダリング結果に後処理 (グロー/色補正/合成など) を加えるノードエディター</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">バックドロップ</span><span class="tc-en">Backdrop</span></div><div class="tc-def">コンポジターでのプレビュー画像。<kbd>Alt</kbd>+<kbd>MMB</kbd> で移動、<kbd>V</kbd> でズーム</div></div>
+  </div>
+</section>
+
+<!-- スカルプト -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">🗿</span> スカルプト (Sculpt Mode)</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">ブラシ</span><span class="tc-en">Brush</span></div><div class="tc-def">スカルプトの作業ツール。サイズ <kbd>F</kbd>、強度 <kbd>Shift</kbd>+<kbd>F</kbd>、種類 <kbd>Shift</kbd>+<kbd>Space</kbd> で切替。<kbd>Ctrl</kbd> ホールドで反転効果</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">マスク</span><span class="tc-en">Mask</span></div><div class="tc-def">スカルプトの影響を受けないよう頂点を保護。<kbd>M</kbd> で塗り、<kbd>Ctrl</kbd>+<kbd>I</kbd> で反転、<kbd>Alt</kbd>+<kbd>M</kbd> でクリア</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">フェースセット</span><span class="tc-en">Face Set</span></div><div class="tc-def">フェースにグループ ID を割り当て。選択範囲の限定・非表示・スカルプト範囲の制御に使う。<kbd>Alt</kbd>+<kbd>W</kbd> パイ</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- アニメーション -->
+<section class="cat anim">
+  <div class="cat-title"><span class="cat-icon">🎞</span> アニメーション</div>
+  <div class="tg wide">
+    <div class="tc"><div class="tc-head"><span class="tc-name">キーフレーム</span><span class="tc-en">Keyframe</span></div><div class="tc-def">アニメーションの「要点」フレーム。2 つのキーフレームの間は自動補間される。<kbd>I</kbd> で現在フレームに追加</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">タイムライン</span><span class="tc-en">Timeline</span></div><div class="tc-def">フレームと再生コントロールのウィンドウ。キーフレームの大まかな配置確認に使う</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ドープシート</span><span class="tc-en">Dopesheet</span></div><div class="tc-def">全オブジェクト/ボーンのキーフレームを一覧表示する。タイムライン上の表示を詳細化したもの。<kbd>Ctrl</kbd>+<kbd>Tab</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">グラフエディター</span><span class="tc-en">Graph Editor</span></div><div class="tc-def">キーフレームの補間カーブ (F-Curve) を編集。動きのイージングを細かく調整できる</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">F-Curve</span></div><div class="tc-def">フレームと値の関係を表すアニメーションカーブ。グラフエディターで視覚的に編集する</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">補間</span><span class="tc-en">Interpolation</span></div><div class="tc-def">2 つのキーフレーム間の値の変化の仕方。<strong>Bezier</strong> (なめらか)・<strong>Linear</strong> (等速)・<strong>Constant</strong> (瞬間切替)。<kbd>T</kbd> で変更</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">イージング</span><span class="tc-en">Easing</span></div><div class="tc-def">動きの加速/減速の制御。Ease In (入り遅い)・Ease Out (出遅い)。F-Curve のハンドルで調整</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">外挿</span><span class="tc-en">Extrapolation</span></div><div class="tc-def">アニメーション範囲外 (最初・最後のキーの外側) での振る舞い。<kbd>Shift</kbd>+<kbd>E</kbd> で設定</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">マーカー</span><span class="tc-en">Marker</span></div><div class="tc-def">タイムライン上の名前付き目印。カメラ切替・シーン区切りなどに使用。<kbd>M</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">プレビュー範囲</span><span class="tc-en">Preview Range</span></div><div class="tc-def">再生範囲を一部に限定する。特定のシーンだけを繰り返し確認したいときに。<kbd>P</kbd>→ドラッグ</div></div>
+  </div>
+</section>
+
+<!-- リギング -->
+<section class="cat rig">
+  <div class="cat-title"><span class="cat-icon">🦴</span> リギング / アーマチュア</div>
+  <div class="tg wide">
+    <div class="tc"><div class="tc-head"><span class="tc-name">アーマチュア</span><span class="tc-en">Armature</span></div><div class="tc-def">キャラクターを動かすためのボーン (骨格) の集合体。独立したオブジェクトとして存在する</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ボーン</span><span class="tc-en">Bone</span></div><div class="tc-def">アーマチュアを構成する 1 本の骨。<strong>Head</strong> (根元) と <strong>Tail</strong> (先端) を持ち、階層構造を作る</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ロール</span><span class="tc-en">Roll</span></div><div class="tc-def">ボーンの軸回りの向き。IK の動作方向やウェイトペイントに影響。<kbd>Ctrl</kbd>+<kbd>R</kbd> で調整、<kbd>Shift</kbd>+<kbd>N</kbd> で再計算</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">IK</span><span class="tc-en">Inverse Kinematics</span></div><div class="tc-def">末端ボーン (例: 手) を動かすと親ボーン (腕) が自動追従。リアルな腕/足の動きに必須。<kbd>Shift</kbd>+<kbd>I</kbd> で追加</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">FK</span><span class="tc-en">Forward Kinematics</span></div><div class="tc-def">親ボーンから順に回転を設定して動かす通常の方式。繊細なポーズ制御に</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">コンストレイント</span><span class="tc-en">Constraint</span></div><div class="tc-def">ボーン/オブジェクトの動きに制限・追従・コピーなどのルールを追加する機能。<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ブレークダウン</span><span class="tc-en">Breakdown</span></div><div class="tc-def">2 つのポーズキーフレームの「中間」を示す特殊フレーム。Push/Relax でどちら寄りかを調整</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">ポーズライブラリ</span><span class="tc-en">Pose Library</span></div><div class="tc-def">よく使うポーズを名前付きで保存しておく場所。<kbd>Shift</kbd>+<kbd>L</kbd> で追加</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- レンダリング -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">📸</span> レンダリング</div>
+  <div class="tg">
+    <div class="tc"><div class="tc-head"><span class="tc-name">レンダリング</span><span class="tc-en">Rendering</span></div><div class="tc-def">3D シーンを 2D 画像/動画に計算・出力する処理。静止画: <kbd>F12</kbd>、アニメーション: <kbd>Ctrl</kbd>+<kbd>F12</kbd></div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">Cycles</span></div><div class="tc-def">光の物理シミュレーションによる高品質レンダーエンジン。時間はかかるが写実的な出力が可能</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">EEVEE</span></div><div class="tc-def">リアルタイムレンダーエンジン。高速だがライティングは近似。アニメーション制作によく使われる</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">レンダリング範囲</span><span class="tc-en">Render Region</span></div><div class="tc-def">ビューポートの一部だけをレンダリング。テスト時間の短縮に。<kbd>Ctrl</kbd>+<kbd>B</kbd> で設定、<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>B</kbd> でクリア</div></div>
+    <div class="tc"><div class="tc-head"><span class="tc-name">レンダースロット</span></div><div class="tc-def">レンダリング結果を最大 8 枚まで保持できるバッファ。<kbd>J</kbd> / <kbd>Alt</kbd>+<kbd>J</kbd> で切替。設定比較に便利</div></div>
+  </div>
+</section>
+
+<!-- パイメニュー -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">⭕</span> パイメニュー (Pie Menu)</div>
+  <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px">キーを押すと円形に選択肢が広がるメニュー。マウスを目的の方向へ動かして選ぶ。素早い操作に特化。</p>
+  <div class="pie-grid">
+    <div class="pie-card"><div class="pc-key"><kbd>Z</kbd> シェーディング切替</div><div class="pc-def">Wireframe / Solid / Material Preview / Rendered</div></div>
+    <div class="pie-card"><div class="pc-key"><kbd>.</kbd> ピボットポイント</div><div class="pc-def">個別オリジン / 3D カーソル / アクティブ要素 / 重心 / 原点</div></div>
+    <div class="pie-card"><div class="pc-key"><kbd>Shift</kbd>+<kbd>S</kbd> スナップ</div><div class="pc-def">カーソルを選択へ / 選択をカーソルへ / グリッドへ / 原点へ など</div></div>
+    <div class="pie-card"><div class="pc-key"><kbd>,</kbd> オリエンテーション</div><div class="pc-def">Global / Local / Normal / Gimbal / View / Cursor</div></div>
+    <div class="pie-card"><div class="pc-key"><kbd>Ctrl</kbd>+<kbd>Tab</kbd> モード</div><div class="pc-def">Object / Edit / Sculpt / Vertex Paint / Weight Paint / Texture Paint など</div></div>
+    <div class="pie-card"><div class="pc-key"><kbd>A</kbd> マスクパイ (スカルプト)</div><div class="pc-def">マスクの反転・クリア・スムーズなど</div></div>
+    <div class="pie-card"><div class="pc-key"><kbd>Alt</kbd>+<kbd>W</kbd> フェースセット (スカルプト)</div><div class="pc-def">フェースセットの操作パイメニュー</div></div>
+  </div>
+</section>
+
+<!-- ウィンドウタイプ -->
+<section class="cat">
+  <div class="cat-title"><span class="cat-icon">🗂</span> ウィンドウ / エディタータイプ</div>
+  <div class="tcard">
+    <table class="ttable">
+      <thead><tr><th>ショートカット</th><th>エディター</th><th>主な用途</th></tr></thead>
+      <tbody>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F2</kbd></td><td>ムービークリップ</td><td>動画の読み込み・モーショントラッキング</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F3</kbd></td><td>ノードエディター</td><td>マテリアル/コンポジット/ジオメトリノード</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F4</kbd></td><td>Python コンソール</td><td>スクリプト実行・デバッグ</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F5</kbd></td><td>3D ビューポート</td><td>メイン作業エリア</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F6</kbd></td><td>グラフエディター</td><td>F-Curve の編集・アニメーションのイージング</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F7</kbd></td><td>プロパティ</td><td>オブジェクト・マテリアル・物理シミュレーション設定</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F8</kbd></td><td>ビデオシーケンサー</td><td>動画編集・カット・音声</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F9</kbd></td><td>アウトライナー</td><td>シーン構造ツリー・オブジェクト/コレクション管理</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F10</kbd></td><td>UV/画像エディター</td><td>UV 編集・テクスチャペイント</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F11</kbd></td><td>テキストエディター</td><td>スクリプト編集・実行</td></tr>
+        <tr><td class="td-key"><kbd>Shift</kbd>+<kbd>F12</kbd></td><td>ドープシート</td><td>キーフレーム一覧・アニメーション全体把握</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- .wrap -->
+</body>
+</html>
