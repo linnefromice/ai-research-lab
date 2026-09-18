@@ -36,18 +36,15 @@ deep-research/
         └── ...
 ```
 
-## トピック例 (2026-04 時点)
+## このリポで進行中のトピック
 
-- admin-ui-system-for-ai-development
-- agentic-browser-testing-cycle
-- claude-code-automation-ideas
-- cloudflare-ai-search-chat-ui
-- diffs-ai-tool-for-browser
-- git-native-knowledge-rag
-- m1-pro-local-llm
-- ...
+| ディレクトリ | 内容 |
+|---|---|
+| [github-issue-agent-orchestration](./github-issue-agent-orchestration/) | GitHub Issues を control plane にしたオーケストレータ (Step 1) |
+| [m1-pro-local-llm-for-avatar](./m1-pro-local-llm-for-avatar/) | M1 Pro 上のローカル LLM + Live2D アバター |
+| [readable-md-pipeline](./readable-md-pipeline/) | 読みやすい md → HTML / スライド |
 
-最新は次で確認:
+親リポ側のレポート一覧:
 
 ```bash
 ls ../ai-research-pipeline/features/deep-research/reports/

@@ -38,22 +38,19 @@ daily-report/
             └── .claude/hooks/...
 ```
 
-## Feature 名の早見表 (2026-04 時点)
+## Feature 名の早見表
 
-| グループ | Feature |
-|---|---|
-| 国内 daily | tech-trends / finance-markets / invest-japan / productivity / life-hacks |
-| Global daily | tech-trends-global / wellness-global / parenting-global / family-finance-global / workstyle-global |
-| Weekly | wellness / parenting-baby / parenting-edu / family-finance / workstyle |
-| Session | invest-japan / invest-global (open/mid/close) |
+正本は [../docs/pipeline-reference.md](../docs/pipeline-reference.md)。2026-09 時点で
+日次が落ちているのは `tech-trends` / `finance-markets` / `tech-trends-global`。
 
-最新は `ls ../ai-research-pipeline/features/` で確認。
+最新は `just daily` または `ls ../ai-research-pipeline/features/` で確認。
 
 ## 始め方
 
 1. 起点とする日次レポートを開く:
    ```bash
-   cat ../../ai-research-pipeline/features/tech-trends/reports/2026-04-27.md
+   just daily
+   cat ../../ai-research-pipeline/features/tech-trends/reports/2026-09-17.md
    ```
 2. 試したい項目を 1 つ抽出する
 3. `<feature>/<date>/<slug>/` を切って `README.md` を書く

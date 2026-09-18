@@ -42,6 +42,12 @@ dev 環境では通常、ai-research-pipeline は `../ai-research-pipeline` に�
 
 存在しない場合はユーザーに確認する (clone されていない可能性)。
 
+## 日次定例 vs 親リポの定型日次
+
+- **日次定例** (このリポ): `just daily`。親リポの最新レポートを Read して実験候補を出す。
+- **定型日次** (親リポ): `../ai-research-pipeline/scripts/ops-phrase-daily.sh`。
+  RSS 収集 + レポート生成 + 公開反映。**このリポからは実行しない** (親は Read のみ)。
+
 ## 行動原則
 
 このリポは PoC・実験用なので、pipeline 側よりも軽量に振る舞う:

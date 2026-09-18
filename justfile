@@ -10,10 +10,15 @@ md_to_html := 'deep-research/readable-md-pipeline/md-to-html'
 md_to_slide := 'deep-research/readable-md-pipeline/md-to-slide'
 md_pipeline := 'deep-research/readable-md-pipeline'
 md_review := 'deep-research/readable-md-pipeline/review'
+orch := 'deep-research/github-issue-agent-orchestration'
 
 # コマンド一覧を表示
 default:
     @just --list
+
+# 日次定例: 親リポの最新 daily-report を一覧 (Read のみ。生成は pipeline 側)
+daily:
+    @./scripts/daily-standup.sh
 
 # 読みやすい md か構造チェック (例: just md-check path/to/x.md ; --lint で markdownlint も)
 md-check *args:
@@ -66,3 +71,7 @@ tts-bench-aivisspeech:
 # persona V1/V2 マトリクス検証 (例: just persona-verify --smoke)
 persona-verify *args:
     cd {{avatar}}/phase4b-llm-stream-chunker && python verify-persona-matrix.py {{args}}
+
+# TARGET_REPO に issue オーケストレーション用ラベル 16 種を作成 (要 .env)
+issue-labels:
+    {{orch}}/scripts/setup-issue-labels.sh
