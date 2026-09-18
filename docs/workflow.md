@@ -11,19 +11,15 @@ ai-research-lab で実験を始めてから片付けるまでの基本フロー�
 毎朝の自動生成レポートから「面白い」「試したい」「気になる」項目を選ぶ。
 
 ```bash
-# 親リポの最新レポートをざっと眺める例
+just daily   # 最新レポート日 + Highlights 抜粋 (親リポは Read のみ)
+
+# 個別に読む例
 ls ../ai-research-pipeline/features/tech-trends/reports/ | tail
-cat ../ai-research-pipeline/features/tech-trends/reports/2026-04-27.md
+cat ../ai-research-pipeline/features/tech-trends/reports/2026-09-17.md
 ```
 
-Feature 一覧 (2026-04 時点):
-
-| グループ | Feature |
-|---|---|
-| 国内 daily | tech-trends, finance-markets, invest-japan, productivity, life-hacks |
-| Global daily (EN/JA) | tech-trends-global, wellness-global, parenting-global, family-finance-global, workstyle-global |
-| Weekly | wellness, parenting-baby, parenting-edu, family-finance, workstyle |
-| Session | invest-japan (open/mid/close), invest-global (open/mid/close) |
+Feature 早見は [pipeline-reference.md](./pipeline-reference.md)。2026-09 時点で日次が落ちているのは
+tech-trends / finance-markets / tech-trends-global。それ以外は weekly・停止・スケルトン。
 
 ### Deep research 起点
 

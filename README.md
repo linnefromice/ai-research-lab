@@ -67,6 +67,8 @@ ai-research-lab/
 ├── docs/
 │   ├── workflow.md            # 検証の進め方
 │   └── pipeline-reference.md  # 親リポのレポート探し方
+├── scripts/
+│   └── daily-standup.sh       # `just daily` の実体
 ├── daily-report/              # daily-report 起点の検証
 │   └── README.md
 └── deep-research/             # deep-research 起点の検証
@@ -84,6 +86,7 @@ ai-research-lab/
 
 ```bash
 just              # コマンド一覧を表示
+just daily        # 日次定例: 親リポの最新 daily-report を一覧 (Read のみ)
 just avatar-start # 例: Live2D アバターを起動
 ```
 

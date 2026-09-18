@@ -18,24 +18,33 @@
 | Deep research goal | `../ai-research-pipeline/features/deep-research/goals/<topic>.md` |
 | RSS sources 定義 | `../ai-research-pipeline/public-src/sources/<feature>/sources.json` |
 
-## Feature 一覧 (2026-04 時点)
+## Feature 一覧 (2026-09 時点・実ファイルで確認)
 
-### 国内 daily (5 件 / 朝 cron)
+日次定例は `just daily`。生成そのものは親リポの定型日次。
 
-- tech-trends, finance-markets, invest-japan, productivity, life-hacks
+### 稼働中の daily (直近レポートあり)
 
-### Global daily (5 件 / EN・JA 各 1)
+- tech-trends
+- finance-markets
+- tech-trends-global (`.en.md` / `.ja.md`)
 
-- tech-trends-global, wellness-global, parenting-global, family-finance-global, workstyle-global
+### Weekly (日曜集約。global は EN/JA ペア)
 
-### Weekly (5 件 / 毎週日曜 集約)
+- wellness / wellness-global
+- parenting-baby / parenting-edu / parenting-global
+- family-finance / family-finance-global
+- workstyle / workstyle-global
 
-- wellness, parenting-baby, parenting-edu, family-finance, workstyle
+### 止まっている / レポートが古い (2026-06 以降更新なし)
 
-### Session (平日のみ, 1 日 3 回)
+- productivity (daily、最終 2026-06-15)
+- invest-japan / invest-global (session: open / mid / close)
+- life-hacks (reports 無し、`raw/` のみ)
 
-- invest-japan: open / mid / close
-- invest-global: open / mid / close
+### スケルトンのみ (reports が空)
+
+- arxiv-papers, book-reviews, github-trending, hackernews-top
+- invest-eu, invest-us, podcast-picks, regulation-tracker
 
 ### Deep research
 
@@ -45,6 +54,7 @@
 
 ```bash
 ls ../ai-research-pipeline/features/
+just daily   # lab 側。最新レポート日を一覧
 ```
 
 ## 公開サイト

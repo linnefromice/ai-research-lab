@@ -16,8 +16,8 @@ Claude / Codex で回す構成の、**ローカル側プロジェクト**。
 
 ## 目的
 
-GitHub 側（ラベル作成・issue テンプレ・リポ設定）には触れず、それに **触れにいく
-ローカルプロジェクト** を用意する。3 機構を段階的に載せる:
+GitHub 側の issue テンプレ・リポ設定には触れず、ラベル作成と issue 操作に
+**触れにいくローカルプロジェクト** を用意する。3 機構を段階的に載せる:
 
 | Step | 機構 | 状態 |
 |---|---|---|
@@ -54,6 +54,7 @@ $EDITOR .env            # TARGET_REPO ほか (.env.example のコメント参照
 
 # 2. TARGET_REPO に issue 運用ラベル 16 種を作成 (冪等・再実行可)
 ./scripts/setup-issue-labels.sh
+# またはリポジトリ root から: just issue-labels
 
 # 3. このディレクトリで claude を起動し、単発で 1 周を確認
 claude
@@ -72,6 +73,8 @@ issue テンプレ・リポ作成等それ以外の GitHub 側準備はユーザ
 
 ## このプロジェクトで扱わないもの
 
-- GitHub 側のラベル作成・issue テンプレ配置・リポ作成（ユーザーが別途行う）
+- issue テンプレ配置・リポ作成（ユーザーが別途行う）
 - 秘密情報: `gh` / `claude` の認証は環境側 ambient。`.env` には `TARGET_REPO` 等の
   非秘匿な接続設定のみ。**API key / token は書かない**（lab は public）
+
+ラベル 16 種の作成は扱う（`./scripts/setup-issue-labels.sh` / `just issue-labels`）。
