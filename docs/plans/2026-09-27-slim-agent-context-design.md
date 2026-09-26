@@ -1,9 +1,9 @@
 # 常時読み込みコンテキストの縮小（AGENTS.md 新設 + rules 整理）
 
-参照した手順・判断基準: `private-research-hub` の
-`notes/agent-context-slimming-playbook.md` / `notes/agent-context-file-policy.md`
-（このリポの外にあるメモ。パス・skill 名など research-hub 固有の実装は持ち込まず、
-「4 つの質問」「移動先の表」「200 行 / 20-80 行」の基準だけを適用する）。
+参照した手順・判断基準: 別途保有している非公開の手順メモ（エージェント向け常時
+読み込みコンテキストを薄くするための「4 つの質問」「移動先の表」「200 行 /
+20-80 行」の基準）。メモ自体は非公開かつこのリポの外にあり、固有のパス・skill 名・
+配信の仕組みは持ち込まず、判断基準と手順だけを適用する。
 
 ## 使っているエージェント
 
@@ -80,8 +80,8 @@ Group 2（instruction file 側の劣化）に分類される。
 | 適用しないこと | 削除（重複） | AGENTS.md に一本化 |
 | 流用しているルール（bash/coding-style の注記） | 削除 | coding-style.md 自体の扱いが変わるため不要に |
 
-→ 残る固有情報がほぼ無いため、**ファイルごと削除**を提案（research-hub の
-`development-workflow.md` 削除と同じ理由: 「AGENTS.md の進め方と重複」）。
+→ 残る固有情報がほぼ無いため、**ファイルごと削除**を提案（「AGENTS.md の進め方と
+重複するだけの rule は削除する」という一般的な判断基準に基づく）。
 
 ### `.claude/rules/bash-best-practices.md`
 
@@ -99,21 +99,19 @@ Group 2（instruction file 側の劣化）に分類される。
 - **案 B（残すが縮小）**: `paths` を付けて必要な時だけ読ませ、冒頭を
   「PoC のため参考レベル。イミュータビリティ・小さい関数は理想だが強制しない」に書き換える
 
-## 新しい構成
+## 新しい構成（案。実際の決定は末尾の「決定事項・実施結果」参照）
 
 ```text
 起動時に読む（常時、目標 ~50-60 行）     必要なときだけ読む
 ──────────────────────────────      ─────────────────────────────────
 CLAUDE.md（1 行: @AGENTS.md）          .claude/rules/bash-best-practices.md
  └ AGENTS.md（新設・40-70 行）           （paths: **/*.sh）
-                                       .claude/rules/common/coding-style.md
-                                        （案 B の場合。paths 付き）
                                        README.md / docs/workflow.md /
                                        docs/pipeline-reference.md
 ```
 
 他ツール（opencode / Grok Build 等）は現状このリポで使われていないため、
-「rules を全部読むツールにだけ厚めの内容が届く」という考慮は不要（research-hub と異なる点）。
+「rules を全部読むツールにだけ厚めの内容が届く」という考慮は不要。
 
 ## 実装ステップ（PR 分割）
 
@@ -129,3 +127,20 @@ CLAUDE.md（1 行: @AGENTS.md）          .claude/rules/bash-best-practices.md
 1. **coding-style.md は案 A（削除）/ 案 B（`paths` 化して残す）のどちらにするか**
 2. 設計書の置き場を `docs/plans/` としたが、他に慣習があればそちらに合わせる
 3. PR を 2 本に分けるか、1 本にまとめるか（分けるなら PR 1 マージ後に PR 2 を着手）
+
+## 決定事項・実施結果（2026-09-27）
+
+- **coding-style.md**: 案 A（削除）を採用。ユーザー承認済み
+- **PR 分割**: 1 本の PR に 2 コミット（常時読み込みの縮小 / rules の再配置）で実施。
+  ブランチを分けて 2 PR にするほどの規模ではないと判断
+- **実測結果**: ネストした `claude -p` セッションで確認したところ、常時読み込みは
+  `CLAUDE.md`（1 行）+ `AGENTS.md`（49 行）の計 50 行。`bash-best-practices.md` は
+  `paths` frontmatter により除外されることを確認（466 行 → 50 行）
+- **セルフレビューで追加修正した点**:
+  - `deep-research/` 配下の複数 README / CLAUDE.md が「lab のパス規約」を旧 `CLAUDE.md`
+    の親リポアクセス表にリンクしていたが、その内容は `docs/pipeline-reference.md` に
+    移動済みのため、リンク先を張り替えた（`github-issue-agent-orchestration/CLAUDE.md`
+    の行動原則リンクは `AGENTS.md` へ）
+  - 旧 `CLAUDE.md` にあった「(親リポが) 存在しない場合はユーザーに確認する (clone
+    されていない可能性)」の一文は移設漏れだったため、`docs/pipeline-reference.md` に
+    追記した

@@ -10,7 +10,7 @@
 - 先行: 親リポ `md-to-html` スキル (PR #506) — md→共通ダークテーマ HTML / 印刷 A4 PDF
 
 > 起点レポートは親リポ `ai-research-pipeline` (private) 内。相対パスは隣接 clone 前提
-> (lab のパス規約 — ルート [CLAUDE.md](../../CLAUDE.md) 参照)。
+> (lab のパス規約 — [docs/pipeline-reference.md](../../docs/pipeline-reference.md) 参照)。
 
 ## 目的
 
