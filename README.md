@@ -61,9 +61,7 @@ ai-research-lab/
 ├── justfile                   # ルートから実験を叩くエントリーポイント集約
 ├── .claude/
 │   └── rules/
-│       ├── bash-best-practices.md  # pipeline からコピー
-│       └── common/
-│           └── coding-style.md     # pipeline からコピー
+│       └── bash-best-practices.md  # シェルスクリプトを触るときだけ読まれる (paths 付き)
 ├── docs/
 │   ├── workflow.md            # 検証の進め方
 │   └── pipeline-reference.md  # 親リポのレポート探し方
