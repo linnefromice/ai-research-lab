@@ -8,8 +8,8 @@ md→HTML→slide パイプラインの **Stage 3**。調査/レポート md (�
 
 - レポート: `../../../../ai-research-pipeline/features/deep-research/reports/readable-markdown-to-html-slide-presentation-2026.md` (§D スライド実践 / §E ツール比較 / §F ワークフロー)
 
-> 親リポ (private) のパスは隣接 clone 前提 (lab のパス規約 — ルート
-> [CLAUDE.md](../../../CLAUDE.md) 参照)。
+> 親リポ (private) のパスは隣接 clone 前提 (lab のパス規約 —
+> [docs/pipeline-reference.md](../../../docs/pipeline-reference.md) 参照)。
 
 ## 目的
 

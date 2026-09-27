@@ -42,7 +42,7 @@
 
 ## 行動原則 (lab PoC)
 
-- ルート [../../CLAUDE.md](../../CLAUDE.md) の lab 方針（動くものを最速で・捨てて
+- ルート [../../AGENTS.md](../../AGENTS.md) の lab 方針（動くものを最速で・捨てて
   いい・production 品質の test/docs を要求しない）に従う。
 - ただし **status 遷移の atomic 規約と claim 規約は PoC でも厳守**（破ると
   オーケストレーションが壊れる中核制約のため）。

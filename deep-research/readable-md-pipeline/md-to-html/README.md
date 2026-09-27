@@ -10,7 +10,7 @@ md→HTML→slide パイプラインの **Stage 2**。md (正) を共通テー�
 - 移植元: 親リポ `ai-research-pipeline` の `md-to-html` スキル (PR #506)
 
 > 親リポ (private) のパスは隣接 clone 前提。GitHub の public 読者は辿れない
-> (lab のパス規約 — ルート [CLAUDE.md](../../../CLAUDE.md) 参照)。
+> (lab のパス規約 — [docs/pipeline-reference.md](../../../docs/pipeline-reference.md) 参照)。
 
 ## 目的
 

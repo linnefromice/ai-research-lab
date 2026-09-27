@@ -1,6 +1,11 @@
+---
+paths:
+  - "**/*.sh"
+---
+
 # Bash ベストプラクティス
 
-シェルスクリプト作成時に適用するルール。このプロジェクトで繰り返し遭遇した問題から導出。
+シェルスクリプト作成時に適用するルール。過去に遭遇した問題から導出した罠集。
 
 ---
 
@@ -164,8 +169,8 @@ fi
 ## 空配列の展開 (set -u トラップ)
 
 `set -u` が有効な bash (< 4.4 相当) で空配列を `"${arr[@]}"` で展開すると
-`unbound variable` エラーで即時終了する。引数なしで呼ばれるエントリポイントに
-よく潜む (過去に `./manage.sh run tech-trends` が追加引数なしで即死した PR #133 事例)。
+`unbound variable` エラーで即時終了する。引数なしで呼ばれるエントリポイント
+(CLI ラッパースクリプトなど) によく潜む。
 
 ```bash
 # ❌ BAD — 空配列で死ぬ
@@ -214,6 +219,3 @@ PAYLOAD="$MULTI_LINE_VAR" awk '
 
 gawk (GNU awk) は `-v` で改行を扱える。Linux CI で通って macOS 開発機で落ちるパターンに
 なりやすいので、クロス環境前提のスクリプトは常に `ENVIRON[]` を使う方が無難。
-
-実例: `shared/lib/enhance-goal-merge.sh` の merge awk は `NEW_SCOPE` / `NEW_HINTS` を環境
-変数で渡している (PR #164 で macOS 実行時に踏んだ)。

@@ -10,8 +10,8 @@ md→HTML→slide パイプラインの **Stage 1**。「**読みやすい md = 
 - 該当節: §A (読みやすい Markdown 構造原則) / §B (Single Source 設計) / §F-4 (昇華しやすい md かチェックリスト)
 
 > 起点レポートは親リポ `ai-research-pipeline` (private) 内。上記は隣接 clone 前提の
-> 相対パスで、GitHub の public 読者は辿れない (lab 全体のパス規約 — ルート
-> [CLAUDE.md](../../../CLAUDE.md) 参照)。
+> 相対パスで、GitHub の public 読者は辿れない (lab 全体のパス規約 —
+> [docs/pipeline-reference.md](../../../docs/pipeline-reference.md) 参照)。
 
 ## 目的
 

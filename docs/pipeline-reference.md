@@ -18,6 +18,8 @@
 | Deep research goal | `../ai-research-pipeline/features/deep-research/goals/<topic>.md` |
 | RSS sources 定義 | `../ai-research-pipeline/public-src/sources/<feature>/sources.json` |
 
+上記パスが存在しない場合はユーザーに確認する (`../ai-research-pipeline` が clone されていない可能性)。
+
 ## Feature 一覧 (2026-09 時点・実ファイルで確認)
 
 日次定例は `just daily`。生成そのものは親リポの定型日次。

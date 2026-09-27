@@ -56,14 +56,12 @@ dev clone は通常 `../ai-research-pipeline` に隣接する想定。Claude/AI 
 ```
 ai-research-lab/
 ├── README.md                  # このファイル
-├── CLAUDE.md                  # Claude/AI 向け作業方針
+├── AGENTS.md                  # エージェント向け作業方針 (正本)
+├── CLAUDE.md                  # `@AGENTS.md` を読み込むだけ
 ├── justfile                   # ルートから実験を叩くエントリーポイント集約
 ├── .claude/
 │   └── rules/
-│       ├── lab-workflow.md         # lab 固有の軽量ルール
-│       ├── bash-best-practices.md  # pipeline からコピー
-│       └── common/
-│           └── coding-style.md     # pipeline からコピー
+│       └── bash-best-practices.md  # シェルスクリプトを触るときだけ読まれる (paths 付き)
 ├── docs/
 │   ├── workflow.md            # 検証の進め方
 │   └── pipeline-reference.md  # 親リポのレポート探し方

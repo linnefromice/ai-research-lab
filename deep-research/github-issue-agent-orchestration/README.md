@@ -12,7 +12,7 @@ Claude / Codex で回す構成の、**ローカル側プロジェクト**。
 
 > 起点レポートは親リポ `ai-research-pipeline`（private）内にある。上記は隣接 clone を
 > 前提とした相対パスで、GitHub 上の public 読者は辿れない（lab 全体のパス規約 —
-> ルート [CLAUDE.md](../../CLAUDE.md) 参照）。
+> [docs/pipeline-reference.md](../../docs/pipeline-reference.md) 参照）。
 
 ## 目的
 
